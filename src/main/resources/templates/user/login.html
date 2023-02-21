@@ -3,27 +3,47 @@
 <head>
 <meta charset="UTF-8">
 <title>로그인</title>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+
+<style>
+	ul, li {
+		list-style: none;
+		display: inline;
+		padding: 0;
+		margin: 0;
+	}
+	
+	.list::before {
+		content: "| ";
+	}
+</style>
+
 </head>
 <body>
-<h1>로그인 페이지</h1>
-<h1>메인으로 가는 로고 추가하기</h1>
-
-<div style="width:450px; height:450px; border:1px solid black;">
-	<div style="border:1px solid black;">
-		<div>Input Id!!</div>
-		<div>Input PW!!</div>
-   	</div>
-   	<div>
-   		<label>v</label>
-   		<label>로그인 상태 유지</label>
-   	</div>
-   	<button>LOGIN!!</button>
-   	<ul>
-   		<li>비밀번호 찾기</li>
-   		<li>아이디 찾기</li>
-   		<li>회원가입</li>
-   	</ul>	
+<div style="text-align: center; width: 100%;">
+	<h1>FILM REVIEW LOGIN</h1><!-- (TODO)클릭시 메인으로 이동 -->
+	<div style="width:458px; height:255px; padding: 20px 28px; margin: auto;">
+	<h2>LOGIN</h2>
+	<div style="margin-top: 30px;">
+		<div style="width: 400px; border: thin solid silver; border-top-left-radius: 5px; border-top-right-radius: 5px; margin: auto; padding: 14px 17px;">
+			<i class="bi bi-person" style="font-size: 21px; color: silver; vertical-align: middle;"></i>
+			<input id="inputTop" type="text" style="width: 90%; border: none; vertical-align: middle; font-size: 15px;" placeholder="아이디"/>
+		</div>
+		<div style="width:400px; border: thin solid silver; border-bottom-left-radius: 5px; border-bottom-right-radius: 5px; border-top: none; margin: auto; padding: 14px 17px;">
+			<i class="bi bi-shield-lock" style="font-size: 21px; color: silver; vertical-align: middle;"></i>
+			<input id="inputBottom" type="password" style="width:90%; border: none; vertical-align: middle; font-size: 15px;" placeholder="비밀번호"/>
+	   	</div>
+	   	<button style="width:430px; height: 52px; background-color: green; border-radius: 5px; margin: 10px 0;">로그인</button>
+	</div>
+	</div>
+	<div style="padding: 10px 0; color: gray;">
+	   	<ul>
+	   		<li>비밀번호 찾기</li>
+	   		<li class="list">아이디 찾기</li>
+	   		<li class="list">회원가입</li>
+	   	</ul>	
+	</div>
 </div>
-
 </body>
 </html>
