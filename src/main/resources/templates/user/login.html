@@ -17,6 +17,30 @@
 	.list::before {
 		content: "| ";
 	}
+	
+	input:focus {
+		outline: none;
+	}
+	
+	input {
+		width: 90%; 
+		border: none; 
+		vertical-align: middle; 
+		font-size: 15px;
+	}
+	
+	.info {
+		width:400px; 
+		border: thin solid silver; 
+		margin: auto; 
+		padding: 14px 17px;
+	}
+	
+	i {
+		font-size: 21px; 
+		color: silver; 
+		vertical-align: middle;
+	}
 </style>
 
 </head>
@@ -26,13 +50,13 @@
 	<div style="width:458px; height:255px; padding: 20px 28px; margin: auto;">
 	<h2>LOGIN</h2>
 	<div style="margin-top: 30px;">
-		<div style="width: 400px; border: thin solid silver; border-top-left-radius: 5px; border-top-right-radius: 5px; margin: auto; padding: 14px 17px;">
-			<i class="bi bi-person" style="font-size: 21px; color: silver; vertical-align: middle;"></i>
-			<input id="inputTop" type="text" style="width: 90%; border: none; vertical-align: middle; font-size: 15px;" placeholder="아이디"/>
+		<div class="info" style="border-top-left-radius: 5px; border-top-right-radius: 5px;">
+			<i class="bi bi-person"></i>
+			<input id="inputTop" type="text" placeholder="아이디"/>
 		</div>
-		<div style="width:400px; border: thin solid silver; border-bottom-left-radius: 5px; border-bottom-right-radius: 5px; border-top: none; margin: auto; padding: 14px 17px;">
-			<i class="bi bi-shield-lock" style="font-size: 21px; color: silver; vertical-align: middle;"></i>
-			<input id="inputBottom" type="password" style="width:90%; border: none; vertical-align: middle; font-size: 15px;" placeholder="비밀번호"/>
+		<div class="info" style="border-bottom-left-radius: 5px; border-bottom-right-radius: 5px; border-top: none;">
+			<i class="bi bi-shield-lock"></i>
+			<input id="inputBottom" type="password" placeholder="비밀번호"/>
 	   	</div>
 	   	<button style="width:430px; height: 52px; background-color: green; border-radius: 5px; margin: 10px 0;">로그인</button>
 	</div>
