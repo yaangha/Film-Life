@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
 <title>REVIEW</title>
@@ -20,10 +20,15 @@ slide!!!!
 <div><!-- review block -->
 	<h5>REVIEW LIST</h5>
 	<div>
+		<a th:href="@{ /review/create }">리뷰작성</a>
 		<div style="width: 400px; height: 300px; border: 1px solid black;"></div>
-		<div>review title</div>
-		<div>writer</div>
-		<div>created time</div>
+		<div th:each="reviews : ${ reviewAll }">
+			<a th:href="@{ /review/detail?reviewId={reviewId} (reviewId = ${ reviews.id }) }">
+				<div th:text="${ reviews.title }"></div>
+				<div th:text="${ reviews.content }"></div>
+				<div th:text="${ reviews.createdTime }"></div>
+			</a>
+		</div>
 		<div>watch count</div>
 		<div>like count</div>
 		<div>reply count</div>

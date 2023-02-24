@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Entity(name = "USERS") // table name
 @SequenceGenerator(name = "USERS_SEQ_GEN", sequenceName = "USERS_SEQ", allocationSize = 1)
-public class Users {
+public class Users extends BaseTimeEntity {
 	
 	@Id 
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "USERS_SEQ_GEN")
@@ -35,7 +35,7 @@ public class Users {
 	
 	private String password; // 비밀번호
 	
-	private LocalDateTime registratedDate; // 가입일
+	private String email;
 	
 	private String address; // 주소
 	

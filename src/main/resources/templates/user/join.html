@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
 <title>회원가입</title>
@@ -39,47 +39,44 @@
 <body>
 <div style="width: 100%; text-align: center;">
 	<h2>JOIN</h2><!-- (TODO)클릭시 메인으로 이동 -->
+	<form id="formJoin">
 	<div class="info">
 		<h3>
-			<label for="id">아이디</label>
+			<label for="idName">아이디</label>
 		</h3>
 		<div class="input-div">
-			<input id="id" type="text" autofocus/>
+			<input id="idName" name="idName" type="text" autofocus/>
 		</div>
-		<div id="ok" style="text-align: left;">
-			<p style="color: green;">사용할 수 있는 아이디입니다.</p>
-		</div>
-		<div id="nok" style="text-align: left;">
-			<p style="color: red;">사용할 수 없는 아이디입니다.</p>
-		</div>
+		<div id="checkIdName"></div>
 	</div>
 	
 	<div class="info">
 		<h3>
-			<label for="pw">비밀번호</label>
+			<label for="password">비밀번호</label>
 		</h3>
 		<div class="input-div">
-			<input id="pw" type="password" style="padding: 0 15px 0 0;"/>
+			<input id="password" name="password" type="password" style="padding: 0 15px 0 0;"/>
 			<i class="bi bi-shield-lock" style="font-size: 21px; color: silver; vertical-align: middle;"></i>
 		</div>
 	</div>
 	
 	<div class="info">
 		<h3>
-			<label for="pw-chk">비밀번호 재확인</label>
+			<label for="pwChk">비밀번호 재확인</label>
 		</h3>
 		<div class="input-div">
-			<input id="pw-chk" type="password" style="padding: 0 15px 0 0;"/>
+			<input id="pwChk" type="password" style="padding: 0 15px 0 0;"/>
 			<i class="bi bi-shield-lock" style="font-size: 21px; color: silver; vertical-align: middle;"></i>
 		</div>
+		<div id="checkPw"></div>
 	</div>
 	
 	<div class="info">
 		<h3>
-			<label for="name">이름</label>
+			<label for="username">이름</label>
 		</h3>
 		<div class="input-div">
-			<input id="name" type="text" />
+			<input id="username" name="username" type="text" />
 		</div>
 	</div>
 	
@@ -88,7 +85,7 @@
 			<label for="email">본인 확인 이메일</label>
 		</h3>
 		<div class="input-div">
-			<input id="email" type="text" />
+			<input id="email" name="email" type="text" />
 		</div>
 	</div>
 	
@@ -97,11 +94,25 @@
 			<label for="phone">휴대전화</label>
 		</h3>
 		<div class="input-div">
-			<input id="phone" type="text" />
+			<input id="phone" name="phone" type="text" />
 		</div>
 	</div>
-	
-	<button style="width:460px; height: 52px; background-color: green; border-radius: 5px; margin: 10px 0;">가입하기</button>
+	</form>
+	<button id="btnJoin" style="width:460px; height: 52px; background-color: green; border-radius: 5px; margin: 10px 0;">가입하기</button>
 </div><!-- w-100 end -->
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script th:src="@{ /js/join.js }"></script>
+
+<script>
+const formJoin = document.querySelector('#formJoin');
+const btnJoin = document.querySelector('#btnJoin');
+btnJoin.addEventListener('click', function () {
+	formJoin.action = '/join';
+	formJoin.method = 'post';
+	formJoin.submit();
+});
+
+</script>
 </body>
 </html>

@@ -1,5 +1,7 @@
 package com.project.film.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.project.film.domain.Review;
@@ -27,6 +29,19 @@ public class ReviewService {
 		Review entity = reviewRepository.save(dto.toEntity());
 		
 		return entity;
+	}
+	
+	/**
+	 * detail에서 보여줄 데이터 찾는 메소드
+	 * @param reviewId review table PK
+	 * @return 
+	 */
+	public Review read(Integer reviewId) {
+		return reviewRepository.findById(reviewId).get();
+	}
+
+	public List<Review> readAll() {
+		return reviewRepository.findByOrderByIdDesc();
 	}
 
 }

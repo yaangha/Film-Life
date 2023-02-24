@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
@@ -12,14 +12,14 @@
 
 <div style="width:100%; text-align: center;">
 	<div style="margin: auto; width: 70%;">
-		<div style="border-bottom: thin solid silver; text-align: left; font-size: 30px;">Review Title</div>
-		<div style="height: 500px; font-size: 18px; text-align: left;">Review Content aaaa,,,</div>
+		<div th:text="${ review.title }" style="border-bottom: thin solid silver; text-align: left; font-size: 30px;"></div>
+		<div th:text="${ review.content }" style="height: 500px; font-size: 18px; text-align: left;"></div>
 		<div style="text-align: left;">
 			<div>Writer</div>
-			<div>Created Time</div>
+			<div th:text="${ review.createdTime }"></div>
 			<div>Watch 100</div>
 			<div>Like 500</div>
-			<div>Star Score</div>
+			<div th:text="${ review.score }"></div>
 		</div>
 		<div style="text-align: right;">
 			<button style="width: 100px; height:35px;">Modify</button>

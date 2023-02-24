@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
 <title>로그인</title>
@@ -50,15 +50,17 @@
 	<div style="width:458px; height:255px; padding: 20px 28px; margin: auto;">
 	<h2>LOGIN</h2>
 	<div style="margin-top: 30px;">
+		<form id="formLogin">
 		<div class="info" style="border-top-left-radius: 5px; border-top-right-radius: 5px;">
 			<i class="bi bi-person"></i>
-			<input id="inputTop" type="text" placeholder="아이디"/>
+			<input id="inputTop" name="idName" type="text" placeholder="아이디"/>
 		</div>
 		<div class="info" style="border-bottom-left-radius: 5px; border-bottom-right-radius: 5px; border-top: none;">
 			<i class="bi bi-shield-lock"></i>
-			<input id="inputBottom" type="password" placeholder="비밀번호"/>
+			<input id="inputBottom" name="password" type="password" placeholder="비밀번호"/>
 	   	</div>
-	   	<button style="width:430px; height: 52px; background-color: green; border-radius: 5px; margin: 10px 0;">로그인</button>
+		</form>
+	   	<button id="btnLogin" style="width:430px; height: 52px; background-color: green; border-radius: 5px; margin: 10px 0;">로그인</button>
 	</div>
 	</div>
 	<div style="padding: 10px 0; color: gray;">
@@ -69,5 +71,15 @@
 	   	</ul>	
 	</div>
 </div>
+
+<script>
+const formLogin = document.querySelector('#formLogin');
+const btnLogin = document.querySelector('#btnLogin');
+btnLogin.addEventListener('click', function() {
+	formLogin.action = '/login';
+	formLogin.method = 'post';
+	formLogin.submit();
+});
+</script>
 </body>
 </html>
