@@ -1,50 +1,53 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-<meta charset="UTF-8">
-<title>REVIEW</title>
-</head>
-<body>
-<h1>review main page</h1>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{ layout/basic-layout }">
 
-<div><!-- main slide -->
-slide!!!!
-</div>
+<div layout:fragment="content">
 
-<div>search part</div>
-<div>
-	<input type="text" placeholder="search!!!" />
-	<button>search</button>
-</div>
-
-<div><!-- review block -->
-	<h5>REVIEW LIST</h5>
+	<h1>review main page</h1>
+	
+	<div><!-- main slide -->
+	slide!!!!
+	</div>
+	
+	<div>search part</div>
 	<div>
-		<a th:href="@{ /review/create }">리뷰작성</a>
-		<div style="width: 400px; height: 300px; border: 1px solid black;"></div>
-		<div th:each="reviews : ${ reviewAll }">
-			<a th:href="@{ /review/detail?reviewId={reviewId} (reviewId = ${ reviews.id }) }">
-				<div th:text="${ reviews.title }"></div>
-				<div th:text="${ reviews.content }"></div>
-				<div th:text="${ reviews.createdTime }"></div>
-			</a>
+		<input type="text" placeholder="search!!!" />
+		<button>search</button>
+	</div>
+	
+	<div><!-- review block -->
+		<h5>REVIEW LIST</h5>
+		<div>
+			<a th:href="@{ /review/create }">리뷰작성</a>
+			<div style="width: 400px; height: 300px; border: 1px solid black;"></div>
+			<div th:each="reviews : ${ reviewAll }">
+				<a th:href="@{ /review/detail?reviewId={reviewId} (reviewId = ${ reviews.id }) }">
+					<div th:text="${ reviews.title }"></div>
+					<div th:text="${ reviews.content }"></div>
+					<div th:text="${ reviews.createdTime }"></div>
+				</a>
+			</div>
+			<div>watch count</div>
+			<div>like count</div>
+			<div>reply count</div>
 		</div>
-		<div>watch count</div>
-		<div>like count</div>
-		<div>reply count</div>
 	</div>
-</div>
+	
+	<div><!-- meeting block -->
+		<h5>MEETING LIST</h5>
+		<div>
+			<div style="width: 400px; height: 300px; border: 1px solid black;"></div>
+			<div>meeting title</div>
+			<div>writer</div>
+			<div>created time</div>
+			<div>member 5</div>
+			<div>d day</div>
+		</div>
+	</div>
 
-<div><!-- meeting block -->
-	<h5>MEETING LIST</h5>
-	<div>
-		<div style="width: 400px; height: 300px; border: 1px solid black;"></div>
-		<div>meeting title</div>
-		<div>writer</div>
-		<div>created time</div>
-		<div>member 5</div>
-		<div>d day</div>
-	</div>
-</div>
-</body>
+</div><!-- FRAGMENT END -->
+
 </html>

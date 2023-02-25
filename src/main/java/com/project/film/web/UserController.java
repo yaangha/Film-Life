@@ -9,6 +9,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.project.film.domain.Users;
 import com.project.film.dto.UserJoinDto;
+import com.project.film.dto.UserLoginDto;
+import com.project.film.dto.UserSecurityDto;
+import com.project.film.service.CustomUserDetailsService;
 import com.project.film.service.UsersService;
 
 import lombok.RequiredArgsConstructor;
@@ -20,21 +23,11 @@ import lombok.extern.slf4j.Slf4j;
 public class UserController {
 	
 	private final UsersService userService;
+	private final CustomUserDetailsService customUserDetailsService;
 	
 	@GetMapping("/login")
 	public String login() {
 		return "/user/login";
-	}
-	
-	@PostMapping("/login") // TODO: ajax로 고쳐보기
-	public String login(String idName, String password) {
-		Boolean result = userService.checkLogin(idName, password);
-		if (result) {
-			return "redirect:/review/main";
-		} else {
-			return "redirect:/login";
-		}
-		
 	}
 	
 	@GetMapping("/join")

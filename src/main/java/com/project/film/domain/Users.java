@@ -1,9 +1,12 @@
 package com.project.film.domain;
 
-import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -12,11 +15,13 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Getter
+@Setter
 @Entity(name = "USERS") // table name
 @SequenceGenerator(name = "USERS_SEQ_GEN", sequenceName = "USERS_SEQ", allocationSize = 1)
 public class Users extends BaseTimeEntity {
@@ -43,4 +48,12 @@ public class Users extends BaseTimeEntity {
 	
 	private String withdrawChk; // 탈퇴여부
 	
+	@ElementCollection(fetch = FetchType.LAZY)
+	@Builder.Default
+	private Set<UserRole> roles = new HashSet<>();
+	
+	public Users addRole(UserRole role) {
+		roles.add(role);
+		return this;
+	}
 }
