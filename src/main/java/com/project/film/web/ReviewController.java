@@ -29,8 +29,7 @@ public class ReviewController {
 	
 	@GetMapping("/main")
 	public void main(Model model) {
-		List<Review> reviewAll = reviewService.readAll();
-		
+		List<Review> reviewAll = reviewService.readRelease();
 		model.addAttribute("reviewAll", reviewAll);
 	}
 	
@@ -39,13 +38,13 @@ public class ReviewController {
 	}
 	
 	@PostMapping("/create")
-	public String create(ReviewCreateDto dto, RedirectAttributes attrs) {
-		// save or release ???
-		
+	public String create(ReviewCreateDto dto) {
 		Review entity = reviewService.create(dto);
-		attrs.addFlashAttribute("createdId", entity.getId()); // 리다이렉트 페이지로 해당 데이터 넘김 
-		
-		return "redirect:/review/detail";
+		if (entity.getStorage() == 0) {
+			return "redirect:/review/main";
+		} else {
+			return "redirect:/review/detail?reviewId=" + entity.getId();
+		}
 	}
 	
 	@GetMapping("/detail")

@@ -1,5 +1,6 @@
 package com.project.film.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -42,6 +43,17 @@ public class ReviewService {
 
 	public List<Review> readAll() {
 		return reviewRepository.findByOrderByIdDesc();
+	}
+	
+	public List<Review> readRelease() {
+		List<Review> listAll = readAll();
+		List<Review> list = new ArrayList<>();
+		for (Review r : listAll) {
+			if (r.getStorage() == 1) {
+				list.add(r);
+			}
+		}
+		return list;
 	}
 
 }

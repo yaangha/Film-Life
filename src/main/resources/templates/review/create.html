@@ -22,7 +22,7 @@
 		<div>
 			<form id="formCreate">
 				<input id="score" name="score" type="number" placeholder="별점주기" required/>
-				<input id="author" name="author" type="text" />
+				<input id="author" name="author" type="hidden" th:value="${ #authentication.name }" />
 				<div style="width:70%; border-bottom: thin solid silver; margin: auto;">
 					<textarea id="title" name="title" style="width: 100%; border: none; font-size: 30px; height: 30px; resize: none;" placeholder="제목을 입력하세요" required></textarea>
 				</div>
