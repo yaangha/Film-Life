@@ -6,8 +6,13 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.project.film.domain.Review;
+import com.project.film.domain.ReviewScore;
+import com.project.film.domain.Users;
 import com.project.film.dto.ReviewCreateDto;
+import com.project.film.dto.ReviewReadDto;
 import com.project.film.repository.ReviewRepository;
+import com.project.film.repository.ReviewScoreRepository;
+import com.project.film.repository.UsersRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +23,8 @@ import lombok.extern.slf4j.Slf4j;
 public class ReviewService {
 	
 	private final ReviewRepository reviewRepository;
+	private final ReviewScoreRepository reviewScoreRepository;
+	private final UsersRepository usersRepository;
 	
 	/**
 	 * create 창에서 데이터 저장
@@ -55,5 +62,68 @@ public class ReviewService {
 		}
 		return list;
 	}
+
+	public List<ReviewReadDto> readReleaseAll() {
+		List<Review> listAll = readAll();
+		List<ReviewReadDto> list = new ArrayList<>();
+		for (Review r : listAll) {
+			if (r.getStorage() == 1) {
+				List<ReviewScore> reviewScore = reviewScoreRepository.findByReviewId(r.getId());
+				Integer heart = 0;
+				for (ReviewScore rs : reviewScore) {
+					heart += rs.getHeart();
+				}
+				list.add(ReviewReadDto.fromEntity(r, heart, 0));
+			}
+		}
+		return list;
+	}
+	
+	public ReviewReadDto readReview(Integer reviewId) {
+		ReviewReadDto reviewDto = null;
+		
+		Review review = reviewRepository.findById(reviewId).get();
+		
+		List<ReviewScore> reviewScoreList = reviewScoreRepository.findByReviewId(reviewId);
+		Integer heart = 0;
+		for (ReviewScore rs : reviewScoreList) {
+			heart += rs.getHeart();
+		}
+		
+		// TODO watch 
+		
+		reviewDto = ReviewReadDto.fromEntity(review, heart, 0);
+		
+		return reviewDto;
+	}
+
+	public Integer addHeart(Integer reviewId, String idName) {
+		Integer result = 0;
+		Users user = usersRepository.findByIdName(idName).get();
+		Review review = reviewRepository.findById(reviewId).get();
+		ReviewScore rs = reviewScoreRepository.findHeart(reviewId, user.getId());
+
+		if (rs == null) { // 사용자 데이터가 없을 경우에는 create
+			rs = ReviewScore.builder().users(user).review(review).heart(1).build();
+			reviewScoreRepository.save(rs);
+			result = 0;
+		} else { // 사용자 데이터가 있을 경우에는 update
+			rs.setHeart(1);
+			reviewScoreRepository.save(rs);
+			result = 1;
+		}
+		
+		return result;
+	}
+
+	public Integer deleteHeart(Integer reviewId, String idName) {
+		Users user = usersRepository.findByIdName(idName).get();
+		ReviewScore rs = reviewScoreRepository.findHeart(reviewId, user.getId());
+		rs.setHeart(0);
+		reviewScoreRepository.save(rs);	
+		return rs.getHeart();
+	}
+
+	
 
 }

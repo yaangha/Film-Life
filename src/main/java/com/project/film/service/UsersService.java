@@ -61,4 +61,14 @@ public class UsersService {
 			return false;
 		}
 	}
+	
+	/**
+	 * IdName으로 사용자 찾을 때 사용
+	 * @param idName
+	 * @return
+	 */
+	public Users read(String idName) {
+		Users user = userRepository.findByIdName(idName).get();
+		return user;
+	}
 }

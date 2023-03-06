@@ -4,6 +4,9 @@
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	layout:decorate="~{ layout/basic-layout }">
 
+
+<div layout:fragment="content">
+
 <style>
 	textarea:focus {
 		outline: none;
@@ -13,15 +16,41 @@
 		width: 100px;
 		height: 35px;
 	}
+	
+	.star {
+		position: relative;
+		font-size: 32px;
+		color: #ddd;
+	}
+	
+	.star input {
+		width: 100%;
+		height: 100%;
+		position: absolute;
+		left: 0;
+		opacity: 0;
+		display: inline-block;
+	}
+	
+	.star span {
+		width: 0;
+		position: absolute;
+		left: 0;
+		color: yellow;
+		overflow: hidden;
+		pointer-events: none;
+	}
 </style>
-
-<div layout:fragment="content">
-	<h1>review create page</h1>
 	
 	<div style="width:100%; text-align:center;"><!-- main content -->
+	<h1>review create page</h1>
 		<div>
 			<form id="formCreate">
-				<input id="score" name="score" type="number" placeholder="별점주기" required/>
+				<span class="star">
+					★★★★★
+					<span>★★★★★</span>
+					<input id="score" name="score" type="range" oninput="drawStar(this)" value="1" step="1" min="0" max="5"/>
+				</span>
 				<input id="author" name="author" type="hidden" th:value="${ #authentication.name }" />
 				<div style="width:70%; border-bottom: thin solid silver; margin: auto;">
 					<textarea id="title" name="title" style="width: 100%; border: none; font-size: 30px; height: 30px; resize: none;" placeholder="제목을 입력하세요" required></textarea>
@@ -68,6 +97,11 @@
 		formCreate.submit();
 	})
 	</script> 
+	<script>
+		const drawStar = (target) => {
+			document.querySelector(`.star span`).style.width = `${target.value * 20}%`;
+		}
+	</script>
 </th:block>
 
 </html>

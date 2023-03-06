@@ -9,6 +9,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -16,7 +17,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Getter
+@Data
 @ToString(exclude = {"review", "users"})
 @Entity(name = "REVIEWSCORE")
 @SequenceGenerator(name = "REVIEWSCORE_SEQ_GEN", sequenceName = "REVIEWSCORE_SEQ", allocationSize = 1)
