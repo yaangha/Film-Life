@@ -26,7 +26,7 @@ window.addEventListener('DOMContentLoaded', () => {
 		axios.post('/api/reply', data)
 			.then(response => {
 				console.log(response);
-				clearInputs();
+				clearInputs(response.data);
 				readAllReplies();
 			})
 			.catch(error => {
@@ -34,8 +34,9 @@ window.addEventListener('DOMContentLoaded', () => {
 			})
 	}
 	
-	function clearInputs() {
+	function clearInputs(data) {
 		document.querySelector('#replyText').value = '';
+		document.querySelector('#countReply').innerText = data;
 	}
 	
 	function readAllReplies() {

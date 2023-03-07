@@ -1,25 +1,20 @@
 package com.project.film.web;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.project.film.domain.Reply;
 import com.project.film.domain.Review;
 import com.project.film.domain.Users;
 import com.project.film.dto.ReviewCreateDto;
 import com.project.film.dto.ReviewReadDto;
 import com.project.film.dto.UserSecurityDto;
-import com.project.film.repository.ReviewRepository;
-import com.project.film.service.ReplyService;
 import com.project.film.service.ReviewScoreService;
 import com.project.film.service.ReviewService;
 import com.project.film.service.UsersService;
@@ -36,12 +31,9 @@ public class ReviewController {
 	private final ReviewService reviewService; // @RequiredArgsConstructor 어노테이션 필요 -> final 필드를 초기화해줌
 	private final UsersService userService;
 	private final ReviewScoreService reviewScoreService;
-	private final ReplyService replyService;
 	
 	@GetMapping("/main")
 	public void main(Model model) {
-		// List<Review> reviewAll = reviewService.readRelease();
-		
 		List<ReviewReadDto> reviewAll = reviewService.readReleaseAll();
 		model.addAttribute("reviewAll", reviewAll);
 		
@@ -73,16 +65,35 @@ public class ReviewController {
 		
 		ReviewReadDto reviewDto = reviewService.readReview(reviewId);
 		model.addAttribute("reviewDto",reviewDto);
-		
-		Integer countReply = replyService.countReply(reviewId);
-		model.addAttribute("countReply", countReply);
 		model.addAttribute("review", review);
 		
+		List<ReviewReadDto> reviewAll = reviewService.readReleaseAll();
+		List<ReviewReadDto> otherReview = new ArrayList<>();
+		
+		for (ReviewReadDto dto : reviewAll) {
+			if (dto.getReviewId() != reviewId) {
+				otherReview.add(dto);
+			}
+		}
+		
+		List<ReviewReadDto> otherReviewTopSix = new ArrayList<>();
+		for (int i = 0; i < 6; i ++) {
+			otherReviewTopSix.add(otherReview.get(i));
+		}
+		
+		model.addAttribute("otherReviewTopSix", otherReviewTopSix);
 	}
 	
 	@GetMapping("/modify")
 	public void modify() {
 		
+	}
+	
+	@PostMapping("/search")
+	public String search(String type, String keyword, Model model) {
+		List<ReviewReadDto> reviewAll = reviewService.search(type, keyword); 
+		model.addAttribute("reviewAll",reviewAll);
+		return "/review/main";
 	}
 	
 }

@@ -1,14 +1,87 @@
 <!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>마이페이지</title>
-</head>
-<body>
-<h1>마이페이지!!</h1>
-<h3>마이페이지 메인</h3>
-<h3>마이페이지 회원정보 수정 페이지</h3>
-<h3>마이페이지 작성한 리뷰 보는 페이지</h3>
-<h3>마이페이지 신청한 소모임 보는 페이지</h3>
-</body>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{ layout/basic-layout }">
+	
+<div layout:fragment="content">
+
+<style>
+	.contents {
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+</style>
+
+<div style="width: 80%; margin: auto;">
+
+	<div style="padding: 30px 0;" >
+		<div style="font-size: 25px;" th:text="${ idName + '님' }"></div>
+	</div>
+	
+	<div style="width:100%; margin-bottom: 15px;">
+		<button id="btnChangeRelease" style="width: 49%; display: inline-block; padding: 15px 0; text-align: center; font-size: 27px; border:none; background-color:white; border-bottom: thin solid black;">발행한 글 <span th:text="${ releaseSize }"></span></button>
+		<button id="btnChangeSave" style="width: 49%; display: inline-block; padding: 15px 0; text-align: center; font-size: 27px; border:none; background-color:white; border-bottom: thin solid silver; color: silver;">저장된 글 <span th:text="${ saveSize }"></span></button>
+	</div>
+	
+	<div id="releaseList"><!-- release list -->
+		<div th:each=" reviewRelease : ${ reviewRelease }" style="margin: 10px 0; border-bottom: thin solid silver; padding: 25px 0 25px 25px;">
+			<a th:href="@{ /review/detail?reviewId={reviewId} (reviewId = ${ reviewRelease.id }) }">
+				<div style="display: inline-block; width: 80%; vertical-align: top;">
+					<div class="contents" th:text="${ reviewRelease.title }" style="font-size: 21px; padding-bottom: 5px;"></div>
+					<div class="contents" th:text="${ reviewRelease.content }" style="color: silver; padding-bottom: 35px;"></div>
+					<div th:text="${ #temporals.format(reviewRelease.createdTime, 'yyyy/MM/dd') }" style="font-size: small;"></div>
+				</div>
+				<div style="display:inline-block; width: 15%;">
+					<div style=" height: 100px; border: 1px solid red"></div>
+				</div>
+			</a>
+		</div>
+	</div>
+	
+	<div id="saveList" style="display: none;"><!-- save list -->
+		<div th:each=" reviewSave : ${ reviewSave }" style="margin: 10px 0; border-bottom: thin solid silver; padding: 25px 0 25px 25px;">
+			<!-- <a th:href="@{ /review/detail?reviewId={reviewId} (reviewId = ${ reviewRelease.id }) }"> modify -->
+				<div style="display: inline-block; width: 80%; vertical-align: top;">
+					<div class="contents" th:text="${ reviewSave.title }" style="font-size: 21px; padding-bottom: 5px;"></div>
+					<div class="contents" th:text="${ reviewSave.content }" style="color: silver; padding-bottom: 35px;"></div>
+					<div th:text="${ #temporals.format(reviewSave.createdTime, 'yyyy/MM/dd') }" style="font-size: small;"></div>
+				</div>
+				<div style="display:inline-block; width: 15%;">
+					<div style=" height: 100px; border: 1px solid red"></div>
+				</div>
+			<!-- </a> -->
+		</div>
+	</div>
+	
+</div>
+</div>
+
+<th:block layout:fragment="script">
+	<script>
+		const btnChangeRelease = document.querySelector('#btnChangeRelease');
+		const btnChangeSave = document.querySelector('#btnChangeSave');
+		
+		btnChangeRelease.addEventListener('click', () => {
+			document.querySelector('#releaseList').style.display = '';	
+			document.querySelector('#saveList').style.display = 'none';	
+			document.querySelector('#btnChangeSave').style.color = 'silver';
+			document.querySelector('#btnChangeRelease').style.color = 'black';		
+			document.querySelector('#btnChangeRelease').style.borderBottom = 'thin solid black';	
+			document.querySelector('#btnChangeSave').style.borderBottom = 'thin solid silver';		
+
+		})
+		
+		btnChangeSave.addEventListener('click', () => {
+			document.querySelector('#saveList').style.display = '';
+			document.querySelector('#releaseList').style.display = 'none';
+			document.querySelector('#btnChangeSave').style.color = 'black';
+			document.querySelector('#btnChangeRelease').style.color = 'silver';
+			document.querySelector('#btnChangeSave').style.borderBottom = 'thin solid black';	
+			document.querySelector('#btnChangeRelease').style.borderBottom = 'thin solid silver';	
+
+		})
+	</script>
+</th:block>
 </html>

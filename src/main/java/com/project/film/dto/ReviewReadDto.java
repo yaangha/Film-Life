@@ -17,13 +17,14 @@ public class ReviewReadDto {
 	private String idName;
 	private Integer heart;
 	private Integer watch;
+	private Integer replyCount;
 	private LocalDateTime createdTime;
 	private LocalDateTime modifiedTime;
 	
-	public static ReviewReadDto fromEntity(Review review, Integer heart, Integer watch) {
+	public static ReviewReadDto fromEntity(Review review, Integer heart, Integer watch, Integer replyCount) {
 		return ReviewReadDto.builder()
 				.reviewId(review.getId()).title(review.getTitle()).content(review.getContent()).idName(review.getAuthor())
-				.heart(heart).watch(watch).createdTime(review.getCreatedTime()).modifiedTime(review.getModifiedTime())
+				.heart(heart).watch(watch).createdTime(review.getCreatedTime()).modifiedTime(review.getModifiedTime()).replyCount(replyCount)
 				.build();
 	}
 }

@@ -29,12 +29,8 @@ public class ReplyRestController {
 	//@PreAuthorize("hasRole('USER')")
 	@PostMapping
 	public ResponseEntity<Integer> registerReply(@RequestBody ReplyRegisterDto dto) {
-	
-		log.info("haeun!!!!! replyId = {}", dto);
-		Integer replyId = replyService.create(dto);
-		log.info("haeun!!!!! replyId = {}", replyId);
-		
-		return ResponseEntity.ok(replyId);
+		Integer sizeList = replyService.create(dto);
+		return ResponseEntity.ok(sizeList);
 	}
 	
 	//@PreAuthorize("hasRole('USER')")

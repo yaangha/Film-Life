@@ -38,7 +38,9 @@ public class ReplyService {
 				.review(review).content(dto.getReplyText()).users(user).build();
 		reply = replyRepository.save(reply);
 		
-		return reply.getId();
+		Integer sizeList = replyRepository.findByReviewIdOrderByIdDesc(dto.getReviewId()).size();
+		
+		return sizeList;
 	}
 	
 	/**
@@ -51,16 +53,6 @@ public class ReplyService {
 		return list.stream()
 				.map(ReplyReadDto::fromEntity)
 				.toList();
-	}
-	
-	/**
-	 * 해당 리뷰에 달린 댓글수 구하는 메서드
-	 * @param reviewId
-	 * @return
-	 */
-	public Integer countReply(Integer reviewId) {
-		List<Reply> replies = replyRepository.findByReviewIdOrderByIdDesc(reviewId);
-		return replies.size();
 	}
 
 }

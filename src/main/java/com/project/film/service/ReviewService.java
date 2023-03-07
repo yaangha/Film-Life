@@ -5,11 +5,13 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.project.film.domain.Reply;
 import com.project.film.domain.Review;
 import com.project.film.domain.ReviewScore;
 import com.project.film.domain.Users;
 import com.project.film.dto.ReviewCreateDto;
 import com.project.film.dto.ReviewReadDto;
+import com.project.film.repository.ReplyRepository;
 import com.project.film.repository.ReviewRepository;
 import com.project.film.repository.ReviewScoreRepository;
 import com.project.film.repository.UsersRepository;
@@ -25,6 +27,7 @@ public class ReviewService {
 	private final ReviewRepository reviewRepository;
 	private final ReviewScoreRepository reviewScoreRepository;
 	private final UsersRepository usersRepository;
+	private final ReplyRepository replyRepository;
 	
 	/**
 	 * create 창에서 데이터 저장
@@ -51,17 +54,6 @@ public class ReviewService {
 	public List<Review> readAll() {
 		return reviewRepository.findByOrderByIdDesc();
 	}
-	
-	public List<Review> readRelease() {
-		List<Review> listAll = readAll();
-		List<Review> list = new ArrayList<>();
-		for (Review r : listAll) {
-			if (r.getStorage() == 1) {
-				list.add(r);
-			}
-		}
-		return list;
-	}
 
 	public List<ReviewReadDto> readReleaseAll() {
 		List<Review> listAll = readAll();
@@ -73,7 +65,11 @@ public class ReviewService {
 				for (ReviewScore rs : reviewScore) {
 					heart += rs.getHeart();
 				}
-				list.add(ReviewReadDto.fromEntity(r, heart, 0));
+				
+				List<Reply> reply = replyRepository.findByReviewIdOrderByIdDesc(r.getId());
+				Integer countReply = reply.size();
+				
+				list.add(ReviewReadDto.fromEntity(r, heart, 0, countReply));
 			}
 		}
 		return list;
@@ -90,15 +86,14 @@ public class ReviewService {
 			heart += rs.getHeart();
 		}
 		
-		// TODO watch 
+		List<Reply> reply = replyRepository.findByReviewIdOrderByIdDesc(reviewId);
 		
-		reviewDto = ReviewReadDto.fromEntity(review, heart, 0);
+		reviewDto = ReviewReadDto.fromEntity(review, heart, 0, reply.size());
 		
 		return reviewDto;
 	}
 
 	public Integer addHeart(Integer reviewId, String idName) {
-		Integer result = 0;
 		Users user = usersRepository.findByIdName(idName).get();
 		Review review = reviewRepository.findById(reviewId).get();
 		ReviewScore rs = reviewScoreRepository.findHeart(reviewId, user.getId());
@@ -106,11 +101,15 @@ public class ReviewService {
 		if (rs == null) { // 사용자 데이터가 없을 경우에는 create
 			rs = ReviewScore.builder().users(user).review(review).heart(1).build();
 			reviewScoreRepository.save(rs);
-			result = 0;
 		} else { // 사용자 데이터가 있을 경우에는 update
 			rs.setHeart(1);
 			reviewScoreRepository.save(rs);
-			result = 1;
+		}
+		
+		Integer result = 0;
+		List<ReviewScore> list = reviewScoreRepository.findByReviewId(reviewId);
+		for (ReviewScore score : list) {
+			result += score.getHeart();
 		}
 		
 		return result;
@@ -121,7 +120,49 @@ public class ReviewService {
 		ReviewScore rs = reviewScoreRepository.findHeart(reviewId, user.getId());
 		rs.setHeart(0);
 		reviewScoreRepository.save(rs);	
-		return rs.getHeart();
+		
+		Integer result = 0;
+		List<ReviewScore> list = reviewScoreRepository.findByReviewId(reviewId);
+		for (ReviewScore score : list) {
+			result += score.getHeart();
+		}
+		
+		return result;
+	}
+
+	public List<ReviewReadDto> search(String type, String keyword) {
+		List<ReviewReadDto> list = new ArrayList<>();
+		
+		switch(type) {
+		case "r":
+			List<Review> reviews = reviewRepository.findByAuthorIgnoreCaseContainingOrTitleIgnoreCaseContainingOrContentIgnoreCaseContainingOrderByIdDesc(keyword, keyword, keyword);
+			for (Review r : reviews) {
+				if (r.getStorage() == 1) {
+					Integer heart = 0;
+					List<ReviewScore> reviewScore = reviewScoreRepository.findByReviewId(r.getId());
+					for (ReviewScore rs : reviewScore) {
+						heart += rs.getHeart();
+					}
+					
+					List<Reply> reply = replyRepository.findByReviewIdOrderByIdDesc(r.getId());
+					
+					ReviewReadDto dto = ReviewReadDto.fromEntity(r, heart, 0, reply.size());
+					list.add(dto);
+				}
+			}
+			break;
+		}
+		
+		return list;
+	}
+	
+	/**
+	 * mypage에서 사용자가 작성한 리뷰 불러올 때 사용
+	 * @param idName
+	 * @return
+	 */
+	public List<Review> readUser(String idName) {
+		return reviewRepository.findByAuthorOrderByIdDesc(idName);
 	}
 
 	
