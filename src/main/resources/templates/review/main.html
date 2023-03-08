@@ -4,11 +4,10 @@
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	layout:decorate="~{ layout/basic-layout }">
 
-<div layout:fragment="content">
-<!-- style part -->
+<head>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
 <style>
-	#btnCreate {
+	.btnCreate {
 		width: 30px;
 		text-align: center;
 		background-color: white;
@@ -28,15 +27,27 @@
 		overflow: hidden;
 		text-overflow: ellipsis;
 	}
+	
+	a {
+		color: black;
+		text-decoration: none;
+	}
 </style>
-<!-- style part end -->
+</head>
+
+<div layout:fragment="content">
 
 <div style="width: 93%; text-align: right;">
-	<a id="btnCreate" th:href="@{ /review/create }"><i class="bi bi-pencil"></i></a>
+	<th:block sec:authorize="isAuthenticated()">
+		<a class="btnCreate" th:href="@{ /review/create }"><i class="bi bi-pencil"></i></a>
+	</th:block>
+	<th:block sec:authorize="isAnonymous()">
+		<a class="btnCreate" onclick="loginAlert()"><i class="bi bi-pencil"></i></a>
+	</th:block>
 </div>
 
 <div style="width:80%; margin:auto;">
-	<div style="margin: 30px 0; text-align: center;">
+	<div style="margin-bottom: 30px; text-align: center;">
 		<form id="formSearch">
 			<select name="type" style="font-size: 18px; border: none; outline: none; margin-right: 10px;">
 				<option value="r">Review</option>
@@ -59,7 +70,8 @@
 	
 	<div style="margin: 30px 0;"><!-- review block -->
 		<div style="font-weight: bold; font-size: 28px; margin-bottom: 10px; padding-bottom: 10px; border-bottom: thin solid black;">Reviews</div>
-		<div><!-- review block part -->
+		
+		<div th:if="${#lists.size(reviewAll) <= 6}">
 			<div th:each="reviews : ${ reviewAll }" style="display: inline-block; margin: 10px 12px;">
 				<a th:href="@{ /review/detail?reviewId={reviewId} (reviewId = ${ reviews.reviewId }) }">
 					<div style="width: 350px; height: 200px; margin: 5px 0; border: 1px solid black;"></div>
@@ -82,7 +94,64 @@
 					</div>
 				</a>
 			</div>
-		</div><!-- review block part end -->
+		</div>
+		
+		<div th:if="${#lists.size(reviewAll) > 6}">
+			<div th:each="reviews, reviewsState : ${ reviewAll }" style="display: inline-block; margin: 10px 12px;">
+				<div th:if="${reviewsState.index} < 6">
+					<a th:href="@{ /review/detail?reviewId={reviewId} (reviewId = ${ reviews.reviewId }) }">
+						<div style="width: 350px; height: 200px; margin: 5px 0; border: 1px solid black;"></div>
+						<div id="title" style="width: 350px; font-weight: bold; font-size: 18px; margin-bottom: 2px;" th:text="${ reviews.title }"></div>
+						<div th:text="${ 'by ' + reviews.idName }" style="font-size: small; margin-bottom: 3px;"></div>
+						<div style="font-size: small; color:gray;">
+							<i class="bi bi-alarm" style="margin-right: 3px;"></i><span th:text="${ #temporals.format(reviews.createdTime, 'yyyy/MM/dd') }"></span>
+						</div>
+						<div style="font-size: small; text-align: right;">
+							<span style="margin-right: 5px; color:gray;">
+								<i class="bi bi-eye" style="margin-right: 3px;"></i>
+								<span th:text="${ reviews.watch }"></span>
+							</span>
+							<span style="margin-right: 5px; color:gray;">
+								<i class="bi bi-hearts" style="margin-right: 3px;"></i>
+								<span th:text="${ reviews.heart }"></span>
+							</span>
+							<span style="color:gray;">
+								<i class="bi bi-chat-text" style="margin-right: 3px;"></i>
+								<span th:text="${ reviews.replyCount }"></span>
+							</span>
+						</div>
+					</a>
+				</div>
+				<div id="displayNone" th:if="${reviewsState.index} >= 6" style="display: none;">
+					<a th:href="@{ /review/detail?reviewId={reviewId} (reviewId = ${ reviews.reviewId }) }">
+						<div style="width: 350px; height: 200px; margin: 5px 0; border: 1px solid black;"></div>
+						<div id="title" style="width: 350px; font-weight: bold; font-size: 18px; margin-bottom: 2px;" th:text="${ reviews.title }"></div>
+						<div th:text="${ 'by ' + reviews.idName }" style="font-size: small; margin-bottom: 3px;"></div>
+						<div style="font-size: small; color:gray;">
+							<i class="bi bi-alarm" style="margin-right: 3px;"></i><span th:text="${ #temporals.format(reviews.createdTime, 'yyyy/MM/dd') }"></span>
+						</div>
+						<div style="font-size: small; text-align: right;">
+							<span style="margin-right: 5px; color:gray;">
+								<i class="bi bi-eye" style="margin-right: 3px;"></i>
+								<span th:text="${ reviews.watch }"></span>
+							</span>
+							<span style="margin-right: 5px; color:gray;">
+								<i class="bi bi-hearts" style="margin-right: 3px;"></i>
+								<span th:text="${ reviews.heart }"></span>
+							</span>
+							<span style="color:gray;">
+								<i class="bi bi-chat-text" style="margin-right: 3px;"></i>
+								<span th:text="${ reviews.replyCount }"></span>
+							</span>
+						</div>
+					</a>
+				</div>
+			</div>
+			<div style="text-align: center;">
+				<button id="btnSeeAll" style="width: 50%; font-size: 25px; padding: 10px 0; border: none; background-color: black; color: white; border-radius: 10px; margin: 30px 0;">더보기</button>
+				<button id="btnSeeSix" style="display: none; width: 50%; font-size: 25px; padding: 10px 0; border: none; background-color: black; color: white; border-radius: 10px; margin: 30px 0;">접기</button>		
+			</div>
+		</div>
 	</div>
 	
 	<!-- meeting block
@@ -102,14 +171,12 @@
 </div><!-- FRAGMENT END -->
 
 <th:block layout:fragment="script">
-	<script>
-		const formSearch = document.querySelector('#formSearch');
-		const btnSearch = document.querySelector('#btnSearch');
-		btnSearch.addEventListener('click', () => {
-			formSearch.action = '/review/search';
-			formSearch.method = 'post';
-			formSearch.submit();
-		})
-	</script>
+<script th:src="@{ /js/main.js }"></script>
+<script>
+	function loginAlert() {
+		const result = confirm('로그인 후 사용가능합니다. 로그인 페이지로 이동하시겠습니까?');
+		if (result) { window.location.href = '/login'; }
+	}
+</script>
 </th:block>
 </html>

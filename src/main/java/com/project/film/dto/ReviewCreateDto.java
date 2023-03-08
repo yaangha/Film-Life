@@ -1,5 +1,9 @@
 package com.project.film.dto;
 
+import java.util.List;
+
+import org.springframework.web.multipart.MultipartFile;
+
 import com.project.film.domain.Review;
 
 import lombok.Data;
@@ -7,12 +11,14 @@ import lombok.Data;
 @Data
 public class ReviewCreateDto {
 	
+	private Integer reviewId;
 	private String author;
 	private String title;
 	private String content;
-	// private String image; // 추후 사용,,
 	private Integer score;
 	private Integer storage;
+	
+	// private List<MultipartFile> imageFiles; // /Users/YANGHAEUN/eclipse-project/filmProject
 	
 	public Review toEntity() {
 		return Review.builder()

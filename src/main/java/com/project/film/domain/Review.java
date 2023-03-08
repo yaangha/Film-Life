@@ -37,4 +37,12 @@ public class Review extends BaseTimeEntity {
 	
 	@Column(nullable = false) 
 	private Integer storage;
+	
+	public Review update(String title, String content, Integer score) {
+		this.title = title;
+		this.content = content;
+		this.score = score;
+		
+		return this;
+	}
 }

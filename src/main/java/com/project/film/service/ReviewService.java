@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.project.film.domain.Reply;
 import com.project.film.domain.Review;
@@ -162,7 +163,30 @@ public class ReviewService {
 	 * @return
 	 */
 	public List<Review> readUser(String idName) {
+		log.info("idName??={}", idName);
 		return reviewRepository.findByAuthorOrderByIdDesc(idName);
+	}
+
+	public void delete(Integer reviewId) {
+		List<ReviewScore> rs = reviewScoreRepository.findByReviewId(reviewId);
+		for (ReviewScore r : rs) {
+			reviewScoreRepository.deleteById(r.getId());
+		}
+		
+		List<Reply> replies = replyRepository.findByReviewIdOrderByIdDesc(reviewId);
+		for (Reply rp : replies) {
+			replyRepository.deleteById(rp.getId());
+		}
+		reviewRepository.deleteById(reviewId);
+	}
+	
+	@Transactional // save() 하지않아도 저장됨
+	public Integer modify(ReviewCreateDto dto) {
+		Review review = reviewRepository.findById(dto.getReviewId()).get();
+		log.info("here?111={}" ,dto.getTitle());
+		review.update(dto.getTitle(), dto.getContent(), dto.getScore());
+		log.info("here?222={},{}", review.getTitle(), dto.getTitle());
+		return dto.getReviewId();
 	}
 
 	

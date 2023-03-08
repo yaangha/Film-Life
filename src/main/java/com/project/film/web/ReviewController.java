@@ -15,6 +15,7 @@ import com.project.film.domain.Users;
 import com.project.film.dto.ReviewCreateDto;
 import com.project.film.dto.ReviewReadDto;
 import com.project.film.dto.UserSecurityDto;
+import com.project.film.repository.ReviewScoreRepository;
 import com.project.film.service.ReviewScoreService;
 import com.project.film.service.ReviewService;
 import com.project.film.service.UsersService;
@@ -45,6 +46,7 @@ public class ReviewController {
 	
 	@PostMapping("/create")
 	public String create(ReviewCreateDto dto) {
+		log.info("here??????");
 		Review entity = reviewService.create(dto);
 		if (entity.getStorage() == 0) {
 			return "redirect:/review/main";
@@ -76,17 +78,19 @@ public class ReviewController {
 			}
 		}
 		
-		List<ReviewReadDto> otherReviewTopSix = new ArrayList<>();
-		for (int i = 0; i < 6; i ++) {
-			otherReviewTopSix.add(otherReview.get(i));
-		}
-		
-		model.addAttribute("otherReviewTopSix", otherReviewTopSix);
+		model.addAttribute("otherReview", otherReview);
 	}
 	
 	@GetMapping("/modify")
-	public void modify() {
-		
+	public void modify(Integer reviewId, Model model) {
+		Review review = reviewService.read(reviewId);
+		model.addAttribute("review", review);
+	}
+	
+	@PostMapping("/modify")
+	public String modify(ReviewCreateDto dto) {
+		Integer reviewId = reviewService.modify(dto);
+		return "redirect:/review/detail?reviewId=" + reviewId;
 	}
 	
 	@PostMapping("/search")
@@ -94,6 +98,12 @@ public class ReviewController {
 		List<ReviewReadDto> reviewAll = reviewService.search(type, keyword); 
 		model.addAttribute("reviewAll",reviewAll);
 		return "/review/main";
+	}
+	
+	@PostMapping("/delete")
+	public String delete(Integer reviewId) {
+		reviewService.delete(reviewId);
+		return "redirect:/review/main";
 	}
 	
 }

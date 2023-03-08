@@ -62,7 +62,7 @@ public class UserController {
 		
 		Integer releaseSize = reviewRelease.size();
 		Integer saveSize = reviewSave.size();
-		
+		log.info("saveSize={}", saveSize);
 		model.addAttribute("releaseSize", releaseSize);
 		model.addAttribute("saveSize", saveSize);
 		model.addAttribute("idName", idName);

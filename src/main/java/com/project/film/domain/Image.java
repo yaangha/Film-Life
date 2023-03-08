@@ -24,10 +24,10 @@ public class Image {
 	private Integer id;
 	
 	@Column(nullable = false)
-	private String originName;
+	private String originName; // 기존 파일명
 	
 	@Column(nullable = false)
-	private String fileName;
+	private String fileName; // 서버 파일명
 	
 	@Column(nullable = false)
 	private String filePath;

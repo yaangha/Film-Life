@@ -15,13 +15,13 @@
 		margin-right: 20px;
 	}
 	
-	a {
+	#headerUl a {
 		font-weight: bold;
 		color: black;
 		text-decoration: none;
 	}
 	
-	a:hover {
+	#headerUl a:hover {
 		color: gray;
 	}
 	
@@ -33,10 +33,10 @@
 
 <div id="header" style="margin:auto; width:100%; height: 70px; background-color: white;  border-bottom: thin solid silver; text-align: right;">
 	<div>
-		<ul>
+		<ul id="headerUl">
 			<li><a th:href="@{ /review/main }">Main</a></li>
 			<li><a th:href="@{ /review/main }">Reviews</a></li>
-			<li><a th:href="@{ /review/main }">Meetings</a></li>
+			<li><a onclick="notYetAlert()" style="color: gray;">Meetings</a></li>
 			<th:block sec:authorize="isAnonymous()">
 				<li><a th:href="@{ /login }">로그인</a></li>
 				<li><a th:href="@{ /join }">회원가입</a></li>
@@ -56,9 +56,12 @@
 		const idName = document.querySelector('#idName').innerText;
 		console.log(idName);
 		window.location.href = '/mypage?idName=' + idName;
-	}
+	};
+	
+	function notYetAlert() {
+		alert('서비스 준비중입니다 :)');
+	};
 </script>
 </div><!-- fragment end -->
-
 
 </html>
