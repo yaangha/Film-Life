@@ -33,7 +33,14 @@ public class ReviewScore {
 	@ManyToOne
 	private Review review; // 외래키 연결(review_id)
 	
-	private Integer heart; // 좋아요
+	@Builder.Default
+	private Integer heart = 0; // 좋아요
 	
-	private Integer watch; // 조회수
+	@Builder.Default
+	private Integer watch = 0; // 조회수
+	
+	public ReviewScore updateWatchCount() {
+		this.watch++;
+		return this;
+	}
 }

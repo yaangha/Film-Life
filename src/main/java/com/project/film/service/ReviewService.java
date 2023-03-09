@@ -17,6 +17,9 @@ import com.project.film.repository.ReviewRepository;
 import com.project.film.repository.ReviewScoreRepository;
 import com.project.film.repository.UsersRepository;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -187,6 +190,62 @@ public class ReviewService {
 		review.update(dto.getTitle(), dto.getContent(), dto.getScore());
 		log.info("here?222={},{}", review.getTitle(), dto.getTitle());
 		return dto.getReviewId();
+	}
+	
+	/**
+	 * 조회수 증가 메서드
+	 * @param idName 
+	 * @param reviewId
+	 * @param request
+	 * @param response
+	 */
+	public void updateWatchCount(String idName, Integer reviewId, HttpServletRequest request, HttpServletResponse response) {
+		Users user = (idName.equals("Anonymous")) ? (Users.builder().idName("Anonymous").username("Anonymous").build()) : (usersRepository.findByIdName(idName).get());
+//		if (idName.equals("Anonymous")) {
+//			user = Users.builder().idName("Anonymous").username("Anonymous").build();
+//		} else {
+//			user = usersRepository.findByIdName(idName).get();
+//		}
+		Review review = reviewRepository.findById(reviewId).get();
+		ReviewScore reviewScore = reviewScoreRepository.findByReviewIdAndUsersId(reviewId, user.getId());
+		
+		Cookie oldCookie = null;
+		Cookie[] cookies = request.getCookies(); // 현재 존재하는 쿠키 리스트
+		
+		if (cookies != null) { // 쿠키가 존재할 때 reviewCookie 유무체크
+			for (Cookie cookie : cookies) {
+				if (cookie.getName().equals("reviewCookie")) {
+					oldCookie = cookie;
+				}
+			}
+		}
+		
+		if (oldCookie != null) { // reviewCookie 존재시
+			if (!oldCookie.getValue().contains("[" + reviewId.toString() + "-" + user.getId().toString() + "]")) {
+				if (reviewScore == null) {
+					reviewScore = ReviewScore.builder().users(user).review(review).heart(0).watch(0).build();
+					reviewScore = reviewScore.updateWatchCount();
+					reviewScoreRepository.save(reviewScore);
+				} else {
+					reviewScore = reviewScore.updateWatchCount();
+					reviewScoreRepository.save(reviewScore);
+				}
+				
+				oldCookie.setValue(oldCookie.getValue() + "[" + reviewId + "-" + user.getId() + "]");
+				oldCookie.setPath("/");
+				oldCookie.setMaxAge(60 * 30);
+				response.addCookie(oldCookie);
+			}
+		} else { // reviewCookie 없을시
+			reviewScore = ReviewScore.builder().users(user).review(review).heart(0).watch(0).build();
+			reviewScore = reviewScore.updateWatchCount();
+			reviewScoreRepository.save(reviewScore);
+			
+			Cookie newCookie = new Cookie("reviewCookie", "[" + reviewId + "-" + user.getId() + "]");
+			newCookie.setPath("/");
+			newCookie.setMaxAge(60 * 30);
+			response.addCookie(newCookie);
+		}
 	}
 
 	

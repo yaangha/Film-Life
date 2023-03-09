@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.project.film.domain.Review;
 import com.project.film.domain.Users;
@@ -20,6 +21,8 @@ import com.project.film.service.ReviewScoreService;
 import com.project.film.service.ReviewService;
 import com.project.film.service.UsersService;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -37,16 +40,13 @@ public class ReviewController {
 	public void main(Model model) {
 		List<ReviewReadDto> reviewAll = reviewService.readReleaseAll();
 		model.addAttribute("reviewAll", reviewAll);
-		
 	}
 	
 	@GetMapping("/create")
-	public void create() {		
-	}
+	public void create() {}
 	
 	@PostMapping("/create")
 	public String create(ReviewCreateDto dto) {
-		log.info("here??????");
 		Review entity = reviewService.create(dto);
 		if (entity.getStorage() == 0) {
 			return "redirect:/review/main";
@@ -61,7 +61,6 @@ public class ReviewController {
 		if (userSecurityDto != null) {
 			Users user = userService.read(userSecurityDto.getIdName());
 			Integer heart = reviewScoreService.checkHeart(review.getId(), user.getId());
-			log.info("heart,,, {}", heart);		
 			model.addAttribute("heart", heart);			
 		}
 		
@@ -73,9 +72,7 @@ public class ReviewController {
 		List<ReviewReadDto> otherReview = new ArrayList<>();
 		
 		for (ReviewReadDto dto : reviewAll) {
-			if (dto.getReviewId() != reviewId) {
-				otherReview.add(dto);
-			}
+			if (dto.getReviewId() != reviewId) { otherReview.add(dto); }
 		}
 		
 		model.addAttribute("otherReview", otherReview);
@@ -106,4 +103,16 @@ public class ReviewController {
 		return "redirect:/review/main";
 	}
 	
+	@GetMapping("/watchCount")
+	@ResponseBody
+	public void watchCount(@AuthenticationPrincipal UserSecurityDto dto, Integer reviewId, HttpServletRequest request, HttpServletResponse response) {
+		log.info("here? reviewController!!!");
+		if (dto == null) {
+			reviewService.updateWatchCount("Anonymous", reviewId, request, response);
+			log.info("here? reviewController!!! if!!");
+		} else {
+			reviewService.updateWatchCount(dto.getIdName(), reviewId, request, response);
+			log.info("here? reviewController!!! else!!");
+		}
+	}
 }

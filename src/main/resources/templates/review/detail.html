@@ -146,7 +146,7 @@
 			<div th:if="${#lists.size(otherReview) > 3}">
 				<div th:each="reviews, reviewsState : ${ otherReview }" style="display: inline-block; margin: 10px 12px;">
 				<div th:if="${ reviewsState.index } < 3">
-					<a th:href="@{ /review/detail?reviewId={reviewId} (reviewId = ${ reviews.reviewId }) }">
+					<a th:href="@{ /review/detail?reviewId={reviewId} (reviewId = ${ reviews.reviewId }) }"  th:onclick="updateWatchCount([[${reviews.reviewId}]])">
 						<div style="width: 350px; height: 200px; margin: 5px 0; border: 1px solid black;"></div>
 						<div id="title" style="width: 350px; font-weight: bold; font-size: 18px;" th:text="${ reviews.title }"></div>
 						<div th:text="${ reviews.idName }" style="font-size: 15px;"></div>
@@ -273,6 +273,13 @@
 	<script>
 		const score = document.querySelector('#score').value;
 		document.querySelector('#colorStar').style.width = `${score * 20}%`;
+	</script>
+	<script>
+	function updateWatchCount(reviewId) {
+		axios.get('/review/watchCount', { params: { reviewId : reviewId } })
+			.then(response => { console.log(response); })
+			.catch(err => { console.log(err) })
+	}
 	</script>
 </th:block>
 

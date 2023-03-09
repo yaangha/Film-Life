@@ -16,4 +16,6 @@ public interface ReviewScoreRepository extends JpaRepository<ReviewScore, Intege
 
 	List<ReviewScore> findByReviewId(Integer reviewId);
 
+	ReviewScore findByReviewIdAndUsersId(Integer reviewId, Integer id);
+
 }
