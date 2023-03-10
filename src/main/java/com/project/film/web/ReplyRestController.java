@@ -36,10 +36,7 @@ public class ReplyRestController {
 	//@PreAuthorize("hasRole('USER')")
 	@GetMapping("/all/{reviewId}")
 	public ResponseEntity<List<ReplyReadDto>> readAllReplies(@PathVariable Integer reviewId) {
-		log.info("haeun!!!! readallreplies");
 		List<ReplyReadDto> list = replyService.readReplies(reviewId);
-		log.info("haeun!!!! readallreplies");
-		
 		return ResponseEntity.ok(list);
 	}
 	

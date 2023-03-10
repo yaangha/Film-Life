@@ -1,11 +1,18 @@
 package com.project.film.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.project.film.domain.Reply;
+import com.project.film.domain.Review;
+import com.project.film.domain.ReviewScore;
 import com.project.film.domain.Users;
+import com.project.film.repository.ReplyRepository;
+import com.project.film.repository.ReviewRepository;
+import com.project.film.repository.ReviewScoreRepository;
 import com.project.film.repository.UsersRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -18,6 +25,9 @@ public class UsersService {
 	
 	private final PasswordEncoder passwordEncoder;
 	private final UsersRepository userRepository;
+	private final ReviewRepository reviewRepository;
+	private final ReviewScoreRepository reviewScoreRepository;
+	private final ReplyRepository replyRepository;
 	
 	/**
 	 * idName 중복체크
@@ -70,5 +80,26 @@ public class UsersService {
 	public Users read(String idName) {
 		Users user = userRepository.findByIdName(idName).get();
 		return user;
+	}
+
+	public void deleteUser(String idName) {
+		Users user = userRepository.findByIdName(idName).get();
+		List<ReviewScore> rs = reviewScoreRepository.findByUsersId(user.getId());
+		for (ReviewScore r : rs) {
+			reviewScoreRepository.delete(r);
+		}
+		
+		List<Reply> replies = replyRepository.findByUsersId(user.getId());
+		for (Reply r : replies) {
+			replyRepository.delete(r);
+		}
+		
+		List<Review> reviews = reviewRepository.findByAuthorOrderByIdDesc(idName);
+		for (Review r : reviews) {
+			reviewRepository.delete(r);
+		}
+		
+		userRepository.delete(user);
+				
 	}
 }

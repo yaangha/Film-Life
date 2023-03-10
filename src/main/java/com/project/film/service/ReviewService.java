@@ -39,8 +39,6 @@ public class ReviewService {
 	 * @return 객체 리턴
 	 */
 	public Review create(ReviewCreateDto dto) {
-		
-		// dto.setStorage(0);
 		Review entity = reviewRepository.save(dto.toEntity());
 		
 		return entity;
@@ -64,16 +62,12 @@ public class ReviewService {
 		List<ReviewReadDto> list = new ArrayList<>();
 		for (Review r : listAll) {
 			if (r.getStorage() == 1) {
-				List<ReviewScore> reviewScore = reviewScoreRepository.findByReviewId(r.getId());
-				Integer heart = 0;
-				for (ReviewScore rs : reviewScore) {
-					heart += rs.getHeart();
-				}
+				Integer[] score = countScore(r.getId());
 				
 				List<Reply> reply = replyRepository.findByReviewIdOrderByIdDesc(r.getId());
 				Integer countReply = reply.size();
 				
-				list.add(ReviewReadDto.fromEntity(r, heart, 0, countReply));
+				list.add(ReviewReadDto.fromEntity(r, score[0], score[1], countReply));
 			}
 		}
 		return list;
@@ -84,54 +78,13 @@ public class ReviewService {
 		
 		Review review = reviewRepository.findById(reviewId).get();
 		
-		List<ReviewScore> reviewScoreList = reviewScoreRepository.findByReviewId(reviewId);
-		Integer heart = 0;
-		for (ReviewScore rs : reviewScoreList) {
-			heart += rs.getHeart();
-		}
+		Integer[] score = countScore(reviewId);
 		
 		List<Reply> reply = replyRepository.findByReviewIdOrderByIdDesc(reviewId);
 		
-		reviewDto = ReviewReadDto.fromEntity(review, heart, 0, reply.size());
+		reviewDto = ReviewReadDto.fromEntity(review, score[0], score[1], reply.size());
 		
 		return reviewDto;
-	}
-
-	public Integer addHeart(Integer reviewId, String idName) {
-		Users user = usersRepository.findByIdName(idName).get();
-		Review review = reviewRepository.findById(reviewId).get();
-		ReviewScore rs = reviewScoreRepository.findHeart(reviewId, user.getId());
-
-		if (rs == null) { // 사용자 데이터가 없을 경우에는 create
-			rs = ReviewScore.builder().users(user).review(review).heart(1).build();
-			reviewScoreRepository.save(rs);
-		} else { // 사용자 데이터가 있을 경우에는 update
-			rs.setHeart(1);
-			reviewScoreRepository.save(rs);
-		}
-		
-		Integer result = 0;
-		List<ReviewScore> list = reviewScoreRepository.findByReviewId(reviewId);
-		for (ReviewScore score : list) {
-			result += score.getHeart();
-		}
-		
-		return result;
-	}
-
-	public Integer deleteHeart(Integer reviewId, String idName) {
-		Users user = usersRepository.findByIdName(idName).get();
-		ReviewScore rs = reviewScoreRepository.findHeart(reviewId, user.getId());
-		rs.setHeart(0);
-		reviewScoreRepository.save(rs);	
-		
-		Integer result = 0;
-		List<ReviewScore> list = reviewScoreRepository.findByReviewId(reviewId);
-		for (ReviewScore score : list) {
-			result += score.getHeart();
-		}
-		
-		return result;
 	}
 
 	public List<ReviewReadDto> search(String type, String keyword) {
@@ -142,15 +95,11 @@ public class ReviewService {
 			List<Review> reviews = reviewRepository.findByAuthorIgnoreCaseContainingOrTitleIgnoreCaseContainingOrContentIgnoreCaseContainingOrderByIdDesc(keyword, keyword, keyword);
 			for (Review r : reviews) {
 				if (r.getStorage() == 1) {
-					Integer heart = 0;
-					List<ReviewScore> reviewScore = reviewScoreRepository.findByReviewId(r.getId());
-					for (ReviewScore rs : reviewScore) {
-						heart += rs.getHeart();
-					}
+					Integer[] score = countScore(r.getId());
 					
 					List<Reply> reply = replyRepository.findByReviewIdOrderByIdDesc(r.getId());
 					
-					ReviewReadDto dto = ReviewReadDto.fromEntity(r, heart, 0, reply.size());
+					ReviewReadDto dto = ReviewReadDto.fromEntity(r, score[0], score[1], reply.size());
 					list.add(dto);
 				}
 			}
@@ -186,9 +135,8 @@ public class ReviewService {
 	@Transactional // save() 하지않아도 저장됨
 	public Integer modify(ReviewCreateDto dto) {
 		Review review = reviewRepository.findById(dto.getReviewId()).get();
-		log.info("here?111={}" ,dto.getTitle());
-		review.update(dto.getTitle(), dto.getContent(), dto.getScore());
-		log.info("here?222={},{}", review.getTitle(), dto.getTitle());
+		review.setStorage(1);
+		review.update(dto.getTitle(), dto.getContent(), dto.getScore(), review.getStorage());
 		return dto.getReviewId();
 	}
 	
@@ -200,15 +148,20 @@ public class ReviewService {
 	 * @param response
 	 */
 	public void updateWatchCount(String idName, Integer reviewId, HttpServletRequest request, HttpServletResponse response) {
-		Users user = (idName.equals("Anonymous")) ? (Users.builder().idName("Anonymous").username("Anonymous").build()) : (usersRepository.findByIdName(idName).get());
-//		if (idName.equals("Anonymous")) {
-//			user = Users.builder().idName("Anonymous").username("Anonymous").build();
-//		} else {
-//			user = usersRepository.findByIdName(idName).get();
-//		}
-		Review review = reviewRepository.findById(reviewId).get();
-		ReviewScore reviewScore = reviewScoreRepository.findByReviewIdAndUsersId(reviewId, user.getId());
+		Users user = null;
+		if (idName.equals("Anonymous")) {
+			if (usersRepository.findByIdName(idName).get() != null) {
+				user = usersRepository.findByIdName(idName).get();
+			} else {
+				user = Users.builder().idName("Anonymous").username("Anonymous").build();
+				usersRepository.save(user);
+			}
+		} else {
+			user = usersRepository.findByIdName(idName).get();
+		}
 		
+		Review review = reviewRepository.findById(reviewId).get();
+		ReviewScore reviewScore = reviewScoreRepository.findScore(reviewId, user.getId());
 		Cookie oldCookie = null;
 		Cookie[] cookies = request.getCookies(); // 현재 존재하는 쿠키 리스트
 		
@@ -248,6 +201,61 @@ public class ReviewService {
 		}
 	}
 
+	public Integer addHeart(Integer reviewId, String idName) {
+		Users user = usersRepository.findByIdName(idName).get();
+		Review review = reviewRepository.findById(reviewId).get();
+		ReviewScore rs = reviewScoreRepository.findScore(reviewId, user.getId());
+
+		if (rs == null) { // 사용자 데이터가 없을 경우에는 create
+			rs = ReviewScore.builder().users(user).review(review).heart(1).build();
+			reviewScoreRepository.save(rs);
+		} else { // 사용자 데이터가 있을 경우에는 update
+			rs.setHeart(1);
+			reviewScoreRepository.save(rs);
+		}
+		
+		Integer result = totalHeart(reviewId);
+		
+		return result;
+	}
+
+	public Integer deleteHeart(Integer reviewId, String idName) {
+		Users user = usersRepository.findByIdName(idName).get();
+		ReviewScore rs = reviewScoreRepository.findScore(reviewId, user.getId());
+		rs.setHeart(0);
+		reviewScoreRepository.save(rs);	
+		
+		Integer result = totalHeart(reviewId);
+		
+		return result;
+	}
 	
+	// 중복되는 코드는 메서드 만들어서 사용
+	public Integer totalHeart(Integer reviewId) {
+		Integer result = 0;
+		List<ReviewScore> list = reviewScoreRepository.findByReviewId(reviewId);
+		for (ReviewScore rs : list) {
+			result += rs.getHeart();
+		}
+		
+		return result;
+	}
+	
+	public Integer[] countScore(Integer reviewId) {
+		Integer[] score = new Integer[2];
+		
+		Integer heart = 0;
+		Integer watch = 0;
+		List<ReviewScore> reviewScore = reviewScoreRepository.findByReviewId(reviewId);
+		for (ReviewScore rs : reviewScore) {
+			heart += rs.getHeart();
+			watch += rs.getWatch();
+			}
+		
+		score[0] = heart;
+		score[1] = watch;
+		
+		return score;
+	}
 
 }

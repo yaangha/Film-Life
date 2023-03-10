@@ -10,4 +10,6 @@ public interface ReplyRepository extends JpaRepository<Reply, Integer> {
 
 	List<Reply> findByReviewIdOrderByIdDesc(Integer reviewId);
 
+	List<Reply> findByUsersId(Integer id);
+
 }

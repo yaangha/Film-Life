@@ -12,10 +12,10 @@ public interface ReviewScoreRepository extends JpaRepository<ReviewScore, Intege
 	
 	// select r from ReviewScore r where r.review.id = :reviewId and r.users.id = :usersId 
 	@Query("select r from REVIEWSCORE r where r.review.id = :reviewId and r.users.id = :usersId")
-	ReviewScore findHeart(@Param(value = "reviewId") Integer reviewId, @Param(value = "usersId") Integer usersId);
+	ReviewScore findScore(@Param(value = "reviewId") Integer reviewId, @Param(value = "usersId") Integer usersId);
 
 	List<ReviewScore> findByReviewId(Integer reviewId);
 
-	ReviewScore findByReviewIdAndUsersId(Integer reviewId, Integer id);
+	List<ReviewScore> findByUsersId(Integer id);
 
 }

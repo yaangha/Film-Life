@@ -107,7 +107,7 @@
 			</div>
 		</div>
 		<div style="color: gray; font-size: small; text-align: right;">
-			<span style="margin-right: 3px; color:gray;"><i class="bi bi-eye" style="padding-right: 3px;"></i>1500</span>
+			<span style="margin-right: 3px; color:gray;"><i class="bi bi-eye" style="padding-right: 3px;"></i><span th:text="${ reviewDto.watch }"></span></span>
 			<span style="margin-right: 3px; color:gray;"><i class="bi bi-hearts" style="padding-right: 3px;"></i><span id="countHeart" th:text="${ reviewDto.heart }"></span></span>
 		</div>
 		<div th:text="${ review.content }" style="height: 500px; font-size: 15px; white-space: pre-wrap; line-height: 1.5em;"></div>
@@ -204,44 +204,45 @@
 	<script>
 		const reviewIdInput = document.querySelector('#reviewId').value;
 		const reviewId = Number(reviewIdInput);
-		const loginUser = document.querySelector('#loginUser').innerText;
 		
 		const btnHeartAdd = document.querySelector('#heart');
 		const btnHeartDelete = document.querySelector('#heart-full');
 		
 		let countHeart = document.querySelector('#countHeart').value;
 		
-		btnHeartAdd.addEventListener('click', () => {
-			const reviewId = Number(reviewIdInput);
+		if (btnHeartAdd && btnHeartDelete) {
+			btnHeartAdd.addEventListener('click', () => {
+				const reviewId = Number(reviewIdInput);
+				
+				axios.post('/api/review/heart', null, { params: {reviewId} })
+					.then(response => { 
+						console.log(response.data); 
+						changeFull(response.data);
+					})
+					.catch(error => { console.log(error); })
+			})
 			
-			axios.post('/api/review/heart', null, { params: {reviewId} })
-				.then(response => { 
-					console.log(response.data); 
-					changeFull(response.data);
-				})
-				.catch(error => { console.log(error); })
-		})
-		
-		function changeFull(data) {
-			btnHeartDelete.style.display = '';
-			btnHeartAdd.style.display = 'none';
-			document.querySelector('#countHeart').innerText = data;
-		}
-		
-		btnHeartDelete.addEventListener('click', () => {
+			function changeFull(data) {
+				btnHeartDelete.style.display = '';
+				btnHeartAdd.style.display = 'none';
+				document.querySelector('#countHeart').innerText = data;
+			}
 			
-			axios.post('/api/review/heartDelete', null, { params: {reviewId} })
-				.then(response => {
-					console.log(response.data);
-					changeHeart(response.data);
-				})
-				.catch(error => { console.log(error); })
-		})
-		
-		function changeHeart(data) {
-			btnHeartDelete.style.display = 'none';
-			btnHeartAdd.style.display = '';
-			document.querySelector('#countHeart').innerText = data;
+			btnHeartDelete.addEventListener('click', () => {
+				
+				axios.post('/api/review/heartDelete', null, { params: {reviewId} })
+					.then(response => {
+						console.log(response.data);
+						changeHeart(response.data);
+					})
+					.catch(error => { console.log(error); })
+			})
+			
+			function changeHeart(data) {
+				btnHeartDelete.style.display = 'none';
+				btnHeartAdd.style.display = '';
+				document.querySelector('#countHeart').innerText = data;
+			}
 		}
 	</script>
 	<script>

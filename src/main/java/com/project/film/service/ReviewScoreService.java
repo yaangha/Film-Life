@@ -16,7 +16,7 @@ public class ReviewScoreService {
 	private final ReviewScoreRepository reviewScoreRepository;
 	
 	public Integer checkHeart(Integer reviewId, Integer usersId) {
-		ReviewScore reviewScore = reviewScoreRepository.findHeart(reviewId, usersId);
+		ReviewScore reviewScore = reviewScoreRepository.findScore(reviewId, usersId);
 		
 		if (reviewScore == null) {
 			return 0;

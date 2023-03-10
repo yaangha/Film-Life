@@ -106,13 +106,10 @@ public class ReviewController {
 	@GetMapping("/watchCount")
 	@ResponseBody
 	public void watchCount(@AuthenticationPrincipal UserSecurityDto dto, Integer reviewId, HttpServletRequest request, HttpServletResponse response) {
-		log.info("here? reviewController!!!");
 		if (dto == null) {
 			reviewService.updateWatchCount("Anonymous", reviewId, request, response);
-			log.info("here? reviewController!!! if!!");
 		} else {
 			reviewService.updateWatchCount(dto.getIdName(), reviewId, request, response);
-			log.info("here? reviewController!!! else!!");
 		}
 	}
 }

@@ -11,11 +11,13 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Getter
+@Setter
 @Entity(name = "REVIEW")
 @SequenceGenerator(name = "REVIEW_SEQ_GEN", sequenceName = "REVIEW_SEQ", allocationSize = 1)
 public class Review extends BaseTimeEntity {
@@ -38,10 +40,11 @@ public class Review extends BaseTimeEntity {
 	@Column(nullable = false) 
 	private Integer storage;
 	
-	public Review update(String title, String content, Integer score) {
+	public Review update(String title, String content, Integer score, Integer storage) {
 		this.title = title;
 		this.content = content;
 		this.score = score;
+		this.storage = storage;
 		
 		return this;
 	}

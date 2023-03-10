@@ -71,6 +71,12 @@ public class UserController {
 		return "/user/mypage";
 	}
 	
+	@GetMapping("/deleteUser")
+	public String deleteUser(String idName) {
+		userService.deleteUser(idName);
+		return "redirect:/logout";
+	}
+	
 	@GetMapping("/find") 
 	public String find() {
 		return "/user/find";
