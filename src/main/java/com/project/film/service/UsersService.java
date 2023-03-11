@@ -6,10 +6,12 @@ import java.util.Optional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.project.film.domain.Image;
 import com.project.film.domain.Reply;
 import com.project.film.domain.Review;
 import com.project.film.domain.ReviewScore;
 import com.project.film.domain.Users;
+import com.project.film.repository.ImageRepository;
 import com.project.film.repository.ReplyRepository;
 import com.project.film.repository.ReviewRepository;
 import com.project.film.repository.ReviewScoreRepository;
@@ -28,6 +30,7 @@ public class UsersService {
 	private final ReviewRepository reviewRepository;
 	private final ReviewScoreRepository reviewScoreRepository;
 	private final ReplyRepository replyRepository;
+	private final ImageRepository imageRepository;
 	
 	/**
 	 * idName 중복체크
@@ -96,6 +99,10 @@ public class UsersService {
 		
 		List<Review> reviews = reviewRepository.findByAuthorOrderByIdDesc(idName);
 		for (Review r : reviews) {
+			List<Image> imageList = imageRepository.findByReviewId(r.getId());
+			for (Image i : imageList) {
+				imageRepository.delete(i);
+			}
 			reviewRepository.delete(r);
 		}
 		

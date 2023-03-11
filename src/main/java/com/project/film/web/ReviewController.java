@@ -1,22 +1,31 @@
 package com.project.film.web;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.project.film.domain.Image;
 import com.project.film.domain.Review;
 import com.project.film.domain.Users;
 import com.project.film.dto.ReviewCreateDto;
 import com.project.film.dto.ReviewReadDto;
 import com.project.film.dto.UserSecurityDto;
+import com.project.film.repository.ImageRepository;
 import com.project.film.repository.ReviewScoreRepository;
+import com.project.film.service.ImageService;
 import com.project.film.service.ReviewScoreService;
 import com.project.film.service.ReviewService;
 import com.project.film.service.UsersService;
@@ -35,6 +44,16 @@ public class ReviewController {
 	private final ReviewService reviewService; // @RequiredArgsConstructor 어노테이션 필요 -> final 필드를 초기화해줌
 	private final UsersService userService;
 	private final ReviewScoreService reviewScoreService;
+	private final ImageService imageService;
+	private final ImageRepository imageRepository;
+	
+	@ResponseBody
+	@GetMapping("/images/{imageId}")
+	public Resource showImage(@PathVariable("imageId") Long imageId, Model model) throws IOException {
+		log.info("image!!?? 넘어옴??");
+		 Image image = imageRepository.findById(imageId).get();
+	    return new UrlResource("file:" + image.getFilePath());
+	}
 	
 	@GetMapping("/main")
 	public void main(Model model) {
@@ -46,8 +65,13 @@ public class ReviewController {
 	public void create() {}
 	
 	@PostMapping("/create")
-	public String create(ReviewCreateDto dto) {
+	public String create(ReviewCreateDto dto) throws IOException {
 		Review entity = reviewService.create(dto);
+		
+		for (MultipartFile multipartFile : dto.getFiles()) {
+			imageService.saveFile(entity.getId(), multipartFile);
+		}
+		
 		if (entity.getStorage() == 0) {
 			return "redirect:/review/main";
 		} else {

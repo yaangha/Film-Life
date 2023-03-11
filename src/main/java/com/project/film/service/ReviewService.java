@@ -6,12 +6,14 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.project.film.domain.Image;
 import com.project.film.domain.Reply;
 import com.project.film.domain.Review;
 import com.project.film.domain.ReviewScore;
 import com.project.film.domain.Users;
 import com.project.film.dto.ReviewCreateDto;
 import com.project.film.dto.ReviewReadDto;
+import com.project.film.repository.ImageRepository;
 import com.project.film.repository.ReplyRepository;
 import com.project.film.repository.ReviewRepository;
 import com.project.film.repository.ReviewScoreRepository;
@@ -32,6 +34,7 @@ public class ReviewService {
 	private final ReviewScoreRepository reviewScoreRepository;
 	private final UsersRepository usersRepository;
 	private final ReplyRepository replyRepository;
+	private final ImageRepository imageRepository;
 	
 	/**
 	 * create 창에서 데이터 저장
@@ -67,7 +70,12 @@ public class ReviewService {
 				List<Reply> reply = replyRepository.findByReviewIdOrderByIdDesc(r.getId());
 				Integer countReply = reply.size();
 				
-				list.add(ReviewReadDto.fromEntity(r, score[0], score[1], countReply));
+				List<Image> image = imageRepository.findByReviewId(r.getId());
+				log.info("review controller image list = {}", image);
+				Long imageId = (image.size() == 0)? 0 : image.get(0).getId();
+				
+				log.info("review controller image path?? = {}", imageId);
+				list.add(ReviewReadDto.fromEntity(r, score[0], score[1], countReply, imageId));
 			}
 		}
 		return list;
@@ -81,8 +89,9 @@ public class ReviewService {
 		Integer[] score = countScore(reviewId);
 		
 		List<Reply> reply = replyRepository.findByReviewIdOrderByIdDesc(reviewId);
-		
-		reviewDto = ReviewReadDto.fromEntity(review, score[0], score[1], reply.size());
+		List<Image> image = imageRepository.findByReviewId(review.getId());
+
+		reviewDto = ReviewReadDto.fromEntity(review, score[0], score[1], reply.size(), image.get(0).getId());
 		
 		return reviewDto;
 	}
@@ -98,8 +107,9 @@ public class ReviewService {
 					Integer[] score = countScore(r.getId());
 					
 					List<Reply> reply = replyRepository.findByReviewIdOrderByIdDesc(r.getId());
-					
-					ReviewReadDto dto = ReviewReadDto.fromEntity(r, score[0], score[1], reply.size());
+					List<Image> image = imageRepository.findByReviewId(r.getId());
+
+					ReviewReadDto dto = ReviewReadDto.fromEntity(r, score[0], score[1], reply.size(), image.get(0).getId());
 					list.add(dto);
 				}
 			}
@@ -129,6 +139,12 @@ public class ReviewService {
 		for (Reply rp : replies) {
 			replyRepository.deleteById(rp.getId());
 		}
+		
+		List<Image> images = imageRepository.findByReviewId(reviewId);
+		for (Image i : images) {
+			imageRepository.delete(i);
+		}
+		
 		reviewRepository.deleteById(reviewId);
 	}
 	
@@ -162,6 +178,11 @@ public class ReviewService {
 		
 		Review review = reviewRepository.findById(reviewId).get();
 		ReviewScore reviewScore = reviewScoreRepository.findScore(reviewId, user.getId());
+		if (reviewScore == null) {
+			reviewScore = ReviewScore.builder().users(user).review(review).heart(0).watch(0).build();
+			reviewScoreRepository.save(reviewScore);
+		}
+		log.info("Cookie!! reviewScore = {}", reviewScore.getId());
 		Cookie oldCookie = null;
 		Cookie[] cookies = request.getCookies(); // 현재 존재하는 쿠키 리스트
 		
@@ -175,14 +196,9 @@ public class ReviewService {
 		
 		if (oldCookie != null) { // reviewCookie 존재시
 			if (!oldCookie.getValue().contains("[" + reviewId.toString() + "-" + user.getId().toString() + "]")) {
-				if (reviewScore == null) {
-					reviewScore = ReviewScore.builder().users(user).review(review).heart(0).watch(0).build();
-					reviewScore = reviewScore.updateWatchCount();
-					reviewScoreRepository.save(reviewScore);
-				} else {
-					reviewScore = reviewScore.updateWatchCount();
-					reviewScoreRepository.save(reviewScore);
-				}
+				reviewScore = reviewScore.updateWatchCount();
+				reviewScoreRepository.save(reviewScore);
+				log.info("Cookie!! reviewScore2 = {}", reviewScore.getId());
 				
 				oldCookie.setValue(oldCookie.getValue() + "[" + reviewId + "-" + user.getId() + "]");
 				oldCookie.setPath("/");
@@ -190,9 +206,9 @@ public class ReviewService {
 				response.addCookie(oldCookie);
 			}
 		} else { // reviewCookie 없을시
-			reviewScore = ReviewScore.builder().users(user).review(review).heart(0).watch(0).build();
 			reviewScore = reviewScore.updateWatchCount();
 			reviewScoreRepository.save(reviewScore);
+			log.info("Cookie!! reviewScore3 = {}", reviewScore.getId());
 			
 			Cookie newCookie = new Cookie("reviewCookie", "[" + reviewId + "-" + user.getId() + "]");
 			newCookie.setPath("/");

@@ -18,7 +18,7 @@ public class ReviewCreateDto {
 	private Integer score;
 	private Integer storage;
 	
-	// private List<MultipartFile> imageFiles; // /Users/YANGHAEUN/eclipse-project/filmProject
+	private List<MultipartFile> files; 
 	
 	public Review toEntity() {
 		return Review.builder()

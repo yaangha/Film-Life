@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,7 +22,7 @@ public class Image {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "IMAGE_SEQ_GEN")
-	private Integer id;
+	private Long id;
 	
 	@Column(nullable = false)
 	private String originName; // 기존 파일명
@@ -31,4 +32,7 @@ public class Image {
 	
 	@Column(nullable = false)
 	private String filePath;
+	
+	@ManyToOne
+	private Review review;
 }

@@ -15,6 +15,7 @@
 	}
 	
 	a {
+		text-decoration: none;
 		color: black;
 	}
 	
@@ -47,8 +48,8 @@
 	</div>
 	
 	<div id="releaseList"><!-- release list -->
-		<div th:each=" reviewRelease : ${ reviewRelease }" style="margin: 10px 0; border-bottom: thin solid silver; padding: 25px 0 25px 25px;">
-			<a th:href="@{ /review/detail?reviewId={reviewId} (reviewId = ${ reviewRelease.id }) }">
+		<div th:each=" reviewRelease : ${ reviewRelease }" style="margin: 10px 0; border-bottom: thin solid silver; padding: 25px;">
+			<a th:href="@{ /review/detail?reviewId={reviewId} (reviewId = ${ reviewRelease.reviewId }) }">
 				<div style="display: inline-block; width: 80%; vertical-align: top;">
 					<div class="contents" th:text="${ reviewRelease.title }" style="font-size: 21px; padding-bottom: 5px;"></div>
 					<div class="contents" th:text="${ reviewRelease.content }" style="color: silver; padding-bottom: 35px;"></div>
@@ -57,15 +58,20 @@
 					</div>
 				</div>
 				<div style="display:inline-block; width: 15%;">
-					<div style=" height: 100px; border: 1px solid red"></div>
+					<div th:if="${ reviewRelease.imagePath } == 'none'">
+						<div style="height: 100px; border: 1px solid black;"></div>	
+					</div>
+					<div th:unless="${ reviewRelease.imagePath } == 'none'">
+						<img th:src="|/review/images/${reviewRelease.imageId}|" style="height: 150px; obect-fit: cover;"/>
+					</div>
 				</div>
 			</a>
 		</div>
 	</div>
 	
 	<div id="saveList" style="display: none;"><!-- save list -->
-		<div th:each=" reviewSave : ${ reviewSave }" style="margin: 10px 0; border-bottom: thin solid silver; padding: 25px 0 25px 25px;">
-			<a th:href="@{ /review/modify?reviewId={reviewId} (reviewId = ${ reviewSave.id }) }">
+		<div th:each=" reviewSave : ${ reviewSave }" style="margin: 10px 0; border-bottom: thin solid silver; padding: 25px;">
+			<a th:href="@{ /review/modify?reviewId={reviewId} (reviewId = ${ reviewSave.reviewId }) }">
 				<div style="display: inline-block; width: 80%; vertical-align: top;">
 					<div class="contents" th:text="${ reviewSave.title }" style="font-size: 21px; padding-bottom: 5px;"></div>
 					<div class="contents" th:text="${ reviewSave.content }" style="color: silver; padding-bottom: 35px;"></div>
@@ -74,7 +80,12 @@
 					</div>
 				</div>
 				<div style="display:inline-block; width: 15%;">
-					<div style=" height: 100px; border: 1px solid red"></div>
+					<div th:if="${ reviewSave.imagePath } == 'none'">
+						<div style="height: 150px; border: 1px solid black;"></div>	
+					</div>
+					<div th:unless="${ reviewSave.imagePath } == 'none'">
+						<img th:src="|/review/images/${reviewSave.imageId}|" style="height: 150px; obect-fit: cover;"/>
+					</div>
 				</div>
 			</a>
 		</div>

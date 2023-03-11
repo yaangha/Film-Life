@@ -12,9 +12,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.project.film.domain.Image;
 import com.project.film.domain.Review;
 import com.project.film.domain.Users;
+import com.project.film.dto.ReviewReadDto;
 import com.project.film.dto.UserJoinDto;
+import com.project.film.service.ImageService;
 import com.project.film.service.ReviewService;
 import com.project.film.service.UsersService;
 
@@ -28,6 +31,7 @@ public class UserController {
 	
 	private final UsersService userService;
 	private final ReviewService reviewService;
+	private final ImageService imageService;
 	
 	@GetMapping("/login")
 	public String login() {
@@ -48,15 +52,38 @@ public class UserController {
 	
 	@GetMapping("/mypage")
 	public String mypage(String idName, Model model) {
+		log.info("bbbbbbb");
 		List<Review> reviewAll = reviewService.readUser(idName);
+		List<Image> imageList = imageService.readImg(idName);
 		
-		List<Review> reviewRelease = new ArrayList<>();
-		List<Review> reviewSave = new ArrayList<>();
+		List<ReviewReadDto> reviewRelease = new ArrayList<>();
+		List<ReviewReadDto> reviewSave = new ArrayList<>();
+		
 		for (Review r : reviewAll) {
 			if (r.getStorage() == 0) {
-				reviewSave.add(r);
+				for (Image i : imageList) {
+					if (r.getId() == i.getReview().getId()) {
+						ReviewReadDto dto = ReviewReadDto.fromEntity(r, null, null, null, i.getId());
+						reviewSave.add(dto);
+					}
+				}
 			} else {
-				reviewRelease.add(r);
+				for (Image i : imageList) {
+					if (r.getId() == i.getReview().getId()) {
+						ReviewReadDto dto = ReviewReadDto.fromEntity(r, null, null, null, i.getId());
+						reviewRelease.add(dto);
+					}
+				}
+			}
+		}
+		
+		List<Review> reviewRelease2 = new ArrayList<>();
+		List<Review> reviewSave2 = new ArrayList<>();
+		for (Review r : reviewAll) {
+			if (r.getStorage() == 0) {
+				reviewSave2.add(r);
+			} else {
+				reviewRelease2.add(r);
 			}
 		}
 		
