@@ -12,5 +12,4 @@ public interface UsersRepository extends JpaRepository<Users, Integer> {
 	@EntityGraph(attributePaths = "roles")
 	Optional<Users> findByIdName(String idName);
 
-
 }

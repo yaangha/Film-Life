@@ -24,12 +24,6 @@ public class ReviewReadDto {
 	
 	private Long imageId;
 	
-//	public static ReviewReadDto fromEntity(Review review, Integer heart, Integer watch, Integer replyCount, String imagePath) {
-//		return ReviewReadDto.builder()
-//				.reviewId(review.getId()).title(review.getTitle()).content(review.getContent()).idName(review.getAuthor())
-//				.heart(heart).watch(watch).createdTime(review.getCreatedTime()).modifiedTime(review.getModifiedTime()).replyCount(replyCount).imagePath(imagePath)
-//				.build();
-//	}
 	
 	public static ReviewReadDto fromEntity(Review review, Integer heart, Integer watch, Integer replyCount, Long imageId) {
 		return ReviewReadDto.builder()

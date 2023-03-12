@@ -1,7 +1,6 @@
 package com.project.film.web;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,7 +23,6 @@ import com.project.film.dto.ReviewCreateDto;
 import com.project.film.dto.ReviewReadDto;
 import com.project.film.dto.UserSecurityDto;
 import com.project.film.repository.ImageRepository;
-import com.project.film.repository.ReviewScoreRepository;
 import com.project.film.service.ImageService;
 import com.project.film.service.ReviewScoreService;
 import com.project.film.service.ReviewService;
@@ -33,9 +31,7 @@ import com.project.film.service.UsersService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @RequiredArgsConstructor
 @Controller
 @RequestMapping("/review")
@@ -50,7 +46,6 @@ public class ReviewController {
 	@ResponseBody
 	@GetMapping("/images/{imageId}")
 	public Resource showImage(@PathVariable("imageId") Long imageId, Model model) throws IOException {
-		log.info("image!!?? 넘어옴??");
 		 Image image = imageRepository.findById(imageId).get();
 	    return new UrlResource("file:" + image.getFilePath());
 	}

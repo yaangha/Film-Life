@@ -67,7 +67,6 @@ public class UsersService {
 	 */
 	public Boolean checkLogin(String idName, String password) {
 		Users user = userRepository.findByIdName(idName).get();
-		log.info("haeun.. plz...{}, {}", idName, user.getIdName());
 		if (passwordEncoder.matches(password, user.getPassword())) {
 			return true;
 		} else {
@@ -85,6 +84,10 @@ public class UsersService {
 		return user;
 	}
 
+	/**
+	 * 탈퇴시 사용 
+	 * @param idName 탈퇴할 사용자 아이디 
+	 */
 	public void deleteUser(String idName) {
 		Users user = userRepository.findByIdName(idName).get();
 		List<ReviewScore> rs = reviewScoreRepository.findByUsersId(user.getId());

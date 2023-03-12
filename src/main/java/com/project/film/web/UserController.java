@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -52,10 +51,9 @@ public class UserController {
 	
 	@GetMapping("/mypage")
 	public String mypage(String idName, Model model) {
-		log.info("bbbbbbb");
 		List<Review> reviewAll = reviewService.readUser(idName);
 		List<Image> imageList = imageService.readImg(idName);
-		
+		log.info("imageList size = {}", imageList);
 		List<ReviewReadDto> reviewRelease = new ArrayList<>();
 		List<ReviewReadDto> reviewSave = new ArrayList<>();
 		
@@ -65,7 +63,13 @@ public class UserController {
 					if (r.getId() == i.getReview().getId()) {
 						ReviewReadDto dto = ReviewReadDto.fromEntity(r, null, null, null, i.getId());
 						reviewSave.add(dto);
+						break;
 					}
+					
+					ReviewReadDto dto = ReviewReadDto.fromEntity(r, null, null, null, null);
+					reviewSave.add(dto);
+					break;
+					
 				}
 			} else {
 				for (Image i : imageList) {
@@ -77,19 +81,9 @@ public class UserController {
 			}
 		}
 		
-		List<Review> reviewRelease2 = new ArrayList<>();
-		List<Review> reviewSave2 = new ArrayList<>();
-		for (Review r : reviewAll) {
-			if (r.getStorage() == 0) {
-				reviewSave2.add(r);
-			} else {
-				reviewRelease2.add(r);
-			}
-		}
-		
 		Integer releaseSize = reviewRelease.size();
 		Integer saveSize = reviewSave.size();
-		log.info("saveSize={}", saveSize);
+		log.info("saveSize = {}", saveSize);
 		model.addAttribute("releaseSize", releaseSize);
 		model.addAttribute("saveSize", saveSize);
 		model.addAttribute("idName", idName);

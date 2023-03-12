@@ -20,7 +20,7 @@ public class ReviewRestController {
 	
 	@PostMapping("/api/review/heart")
 	public ResponseEntity<Integer> addHeart(@AuthenticationPrincipal UserSecurityDto userSecurityDto, Integer reviewId) {
-		log.info("hauen Integer reviewId = {}", reviewId);
+		// log.info("Integer reviewId = {}", reviewId);
 		Integer result = reviewService.addHeart(reviewId, userSecurityDto.getIdName());
 		return ResponseEntity.ok(result);
 	}

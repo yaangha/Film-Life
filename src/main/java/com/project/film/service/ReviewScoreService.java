@@ -15,6 +15,7 @@ public class ReviewScoreService {
 	
 	private final ReviewScoreRepository reviewScoreRepository;
 	
+	// detail.html에서 해당 리뷰 좋아요를 한 적이 있는지 체크 
 	public Integer checkHeart(Integer reviewId, Integer usersId) {
 		ReviewScore reviewScore = reviewScoreRepository.findScore(reviewId, usersId);
 		

@@ -11,14 +11,10 @@ public class WebMveConfig implements WebMvcConfigurer {
 	@Value("${file.imageDir}")
 	private String imageLocation;
 	
-//	@Value("${file.imagePath}")
-//	private String imagePath; // /images
-	
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
 		registry.addResourceHandler("/test/**")
 			.addResourceLocations("file://" + imageLocation);
-		
 		
 	}
 	

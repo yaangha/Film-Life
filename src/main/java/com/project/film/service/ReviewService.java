@@ -59,7 +59,8 @@ public class ReviewService {
 	public List<Review> readAll() {
 		return reviewRepository.findByOrderByIdDesc();
 	}
-
+	
+	// 발행된 리뷰들만 List에 저장하는 메서드 
 	public List<ReviewReadDto> readReleaseAll() {
 		List<Review> listAll = readAll();
 		List<ReviewReadDto> list = new ArrayList<>();
@@ -81,6 +82,11 @@ public class ReviewService {
 		return list;
 	}
 	
+	/**
+	 * reviewId로 찾은 리뷰에서 화면에 보여줄 데이터만 저장하는 메서드 
+	 * @param reviewId
+	 * @return
+	 */
 	public ReviewReadDto readReview(Integer reviewId) {
 		ReviewReadDto reviewDto = null;
 		
@@ -95,7 +101,13 @@ public class ReviewService {
 		
 		return reviewDto;
 	}
-
+	
+	/**
+	 * 메인화면에서 검색시 사용 
+	 * @param type 어떤 option인지  
+	 * @param keyword 검색하고자 하는 키워드 
+	 * @return
+	 */
 	public List<ReviewReadDto> search(String type, String keyword) {
 		List<ReviewReadDto> list = new ArrayList<>();
 		
@@ -216,7 +228,8 @@ public class ReviewService {
 			response.addCookie(newCookie);
 		}
 	}
-
+	
+	// 좋아요 추가시 사용 
 	public Integer addHeart(Integer reviewId, String idName) {
 		Users user = usersRepository.findByIdName(idName).get();
 		Review review = reviewRepository.findById(reviewId).get();
@@ -235,6 +248,7 @@ public class ReviewService {
 		return result;
 	}
 
+	// 좋아요 삭제시 사용 
 	public Integer deleteHeart(Integer reviewId, String idName) {
 		Users user = usersRepository.findByIdName(idName).get();
 		ReviewScore rs = reviewScoreRepository.findScore(reviewId, user.getId());
