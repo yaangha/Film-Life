@@ -82,9 +82,11 @@ public class ImageService {
 			for (Review r : reviewList) {
 				if (r.getStorage() == 1) {
 					List<Image> image = imageRepository.findByReviewId(r.getId());
-					if (image != null) {
+					if (image.size() != 0) {
 						imageList.add(image.get(0));
-					}					
+					} else {
+						imageList = null;
+					}
 				}
 			}			
 		} else {

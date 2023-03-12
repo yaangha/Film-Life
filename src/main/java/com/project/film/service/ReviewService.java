@@ -73,7 +73,7 @@ public class ReviewService {
 				
 				List<Image> image = imageRepository.findByReviewId(r.getId());
 				log.info("review controller image list = {}", image);
-				Long imageId = (image.size() == 0)? 0 : image.get(0).getId();
+				Long imageId = (image.size() == 0)? null : image.get(0).getId();
 				
 				log.info("review controller image path?? = {}", imageId);
 				list.add(ReviewReadDto.fromEntity(r, score[0], score[1], countReply, imageId));
@@ -96,8 +96,11 @@ public class ReviewService {
 		
 		List<Reply> reply = replyRepository.findByReviewIdOrderByIdDesc(reviewId);
 		List<Image> image = imageRepository.findByReviewId(review.getId());
-
-		reviewDto = ReviewReadDto.fromEntity(review, score[0], score[1], reply.size(), image.get(0).getId());
+		if (image.size() != 0) {
+			reviewDto = ReviewReadDto.fromEntity(review, score[0], score[1], reply.size(), image.get(0).getId());
+		} else {
+			reviewDto = ReviewReadDto.fromEntity(review, score[0], score[1], reply.size(), null);
+		}
 		
 		return reviewDto;
 	}

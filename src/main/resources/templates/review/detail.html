@@ -111,7 +111,7 @@
 			<span style="margin-right: 3px; color:gray;"><i class="bi bi-hearts" style="padding-right: 3px;"></i><span id="countHeart" th:text="${ reviewDto.heart }"></span></span>
 		</div>
 		
-		<div th:unless="${ reviewDto.imagePath } == 'none'">
+		<div th:unless="${ reviewDto.imageId } == null">
 			<div style="margin: 10px 0;">
 				<img th:src="|/review/images/${reviewDto.imageId}|" style="width: 50%; obect-fit: cover;"/>
 			</div>
@@ -154,7 +154,12 @@
 				<div th:each="reviews, reviewsState : ${ otherReview }" style="display: inline-block; margin: 10px 12px;">
 				<div th:if="${ reviewsState.index } < 3">
 					<a th:href="@{ /review/detail?reviewId={reviewId} (reviewId = ${ reviews.reviewId }) }"  th:onclick="updateWatchCount([[${reviews.reviewId}]])">
-						<div style="width: 350px; height: 200px; margin: 5px 0; border: 1px solid black;"></div>
+						<div th:if="${ reviews.imageId } == null">
+							<div style="width: 350px; height: 250px; margin: 5px 0; border: 1px solid black;"></div>	
+						</div>
+						<div th:unless="${ reviews.imageId } == null">
+							<img th:src="|/review/images/${reviews.imageId}|" style="width: 350px; height: 250px; margin: 5px 0; obect-fit: cover;"/>
+						</div>
 						<div id="title" style="width: 350px; font-weight: bold; font-size: 18px;" th:text="${ reviews.title }"></div>
 						<div th:text="${ 'by ' + reviews.idName }" style="font-size: small; margin-bottom: 3px;"></div>
 						<div style="font-size: small; color:gray;">
@@ -181,10 +186,10 @@
 			<div th:unless="${#lists.size(otherReview) > 3}">
 				<div th:each="reviews : ${ otherReview }" style="display: inline-block; margin: 10px 12px;">
 					<a th:href="@{ /review/detail?reviewId={reviewId} (reviewId = ${ reviews.reviewId }) }">
-						<div th:if="${ reviews.imagePath } == 'none'">
-							<div style="width: 350px; height: 200px; margin: 5px 0; border: 1px solid black;"></div>	
+						<div th:if="${ reviews.imageId } == null">
+							<div style="width: 350px; height: 250px; margin: 5px 0; border: 1px solid black;"></div>	
 						</div>
-						<div th:unless="${ reviews.imagePath } == 'none'">
+						<div th:unless="${ reviews.imageId } == null">
 							<img th:src="|/review/images/${reviews.imageId}|" style="width: 350px; height: 250px; margin: 5px 0; obect-fit: cover;"/>
 						</div>
 						<div id="title" style="width: 350px; font-weight: bold; font-size: 18px;" th:text="${ reviews.title }"></div>

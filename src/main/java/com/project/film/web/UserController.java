@@ -59,24 +59,38 @@ public class UserController {
 		
 		for (Review r : reviewAll) {
 			if (r.getStorage() == 0) {
-				for (Image i : imageList) {
-					if (r.getId() == i.getReview().getId()) {
-						ReviewReadDto dto = ReviewReadDto.fromEntity(r, null, null, null, i.getId());
+				if (imageList != null) {
+					for (Image i : imageList) {
+						if (r.getId() == i.getReview().getId()) {
+							ReviewReadDto dto = ReviewReadDto.fromEntity(r, null, null, null, i.getId());
+							reviewSave.add(dto);
+							break;
+						}
+						
+						ReviewReadDto dto = ReviewReadDto.fromEntity(r, null, null, null, null);
 						reviewSave.add(dto);
 						break;
 					}
-					
+				} else {
 					ReviewReadDto dto = ReviewReadDto.fromEntity(r, null, null, null, null);
 					reviewSave.add(dto);
-					break;
-					
 				}
 			} else {
-				for (Image i : imageList) {
-					if (r.getId() == i.getReview().getId()) {
-						ReviewReadDto dto = ReviewReadDto.fromEntity(r, null, null, null, i.getId());
+				if (imageList != null) {
+					for (Image i : imageList) {
+						if (r.getId() == i.getReview().getId()) {
+							ReviewReadDto dto = ReviewReadDto.fromEntity(r, null, null, null, i.getId());
+							reviewRelease.add(dto);
+							break;
+						}
+						
+						ReviewReadDto dto = ReviewReadDto.fromEntity(r, null, null, null, null);
 						reviewRelease.add(dto);
+						break;
 					}
+				} else {
+					ReviewReadDto dto = ReviewReadDto.fromEntity(r, null, null, null, null);
+					reviewRelease.add(dto);
 				}
 			}
 		}

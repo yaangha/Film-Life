@@ -58,10 +58,7 @@
 					</div>
 				</div>
 				<div style="display:inline-block; width: 15%;">
-					<div th:if="${ reviewRelease.imagePath } == 'none'">
-						<div style="height: 100px; border: 1px solid black;"></div>	
-					</div>
-					<div th:unless="${ reviewRelease.imagePath } == 'none'">
+					<div th:unless="${ reviewRelease.imageId } == null">
 						<img th:src="|/review/images/${reviewRelease.imageId}|" style="height: 150px; obect-fit: cover;"/>
 					</div>
 				</div>
@@ -80,10 +77,7 @@
 					</div>
 				</div>
 				<div style="display:inline-block; width: 15%;">
-					<div th:if="${ reviewSave.imagePath } == 'none'">
-						<div style="height: 150px; border: 1px solid black;"></div>	
-					</div>
-					<div th:unless="${ reviewSave.imagePath } == 'none'">
+					<div th:unless="${ reviewSave.imageId } == null">
 						<img th:src="|/review/images/${reviewSave.imageId}|" style="height: 150px; obect-fit: cover;"/>
 					</div>
 				</div>
