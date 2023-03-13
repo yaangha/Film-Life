@@ -17,6 +17,26 @@
 
 3. 좋아요
 
+```
+<div style="display: inline-block; vertical-align: top;">
+  <th:block sec:authorize="isAuthenticated()">
+    <span id="loginUser" sec:authentication="principal.idName" style="display: none;"></span>
+    <div th:if="${ heart } == 0">
+      <button class="btnHeart" id="heart"><i class="bi bi-hearts"></i></button>
+      <button class="btnHeart" id="heart-full" style="display: none;"><i class="bi bi-hearts"></i></button>
+    </div>
+    <div th:unless="${ heart } == 0">
+      <button class="btnHeart" id="heart" style="display: none;"><i class="bi bi-hearts"></i></button>
+      <button class="btnHeart" id="heart-full"><i class="bi bi-hearts"></i></button>
+    </div>
+  </th:block>
+  <th:block sec:authorize="isAnonymous()">
+    <button class="btnHeart" id="heart" onclick="loginAlert()"><i class="bi bi-hearts"></i></button>
+  </th:block>
+</div>
+```
+
+
 4. 댓글
 
 5. 검색
