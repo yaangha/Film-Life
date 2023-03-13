@@ -639,7 +639,7 @@ public Long saveFile(Integer reviewId, MultipartFile files) throws IOException {
 
 ## 구성 화면
 ### 메인 페이지
-+ 중앙 메인 이미지를 누르면 [씨네21] 관련 기사로 이동
++ 리뷰, 작성자로 검색할 수 있으며 중앙 메인 이미지를 누르면 [씨네21] 관련 기사로 이동
   
 ![메인1](https://user-images.githubusercontent.com/113163657/224760341-9902d642-0487-4c54-88d1-c385742db10c.png)
   
