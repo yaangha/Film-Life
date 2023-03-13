@@ -643,11 +643,29 @@ public Long saveFile(Integer reviewId, MultipartFile files) throws IOException {
 ```
 
 ## 구성 화면
-#### 메인
-+ 메인 화면 -> 중앙 메인 이미지를 누르면 [씨네21] 관련 기사로 이동
+### 메인 페이지
++ 중앙 메인 이미지를 누르면 [씨네21] 관련 기사로 이동
   
 ![메인1](https://user-images.githubusercontent.com/113163657/224760341-9902d642-0487-4c54-88d1-c385742db10c.png)
   
-+ 메인 화면 -> 리뷰 6개 이상일 때는 더보기 버튼을 통해 전체 리뷰를 확인할 수 있음
++ 리뷰 6개 이상일 때는 더보기 버튼을 통해 전체 리뷰를 확인할 수 있음
   
 ![메인2](https://user-images.githubusercontent.com/113163657/224760439-897420c2-c979-41f6-abb8-bfd61610c4a2.png)
+
+### 리뷰 상세 페이지
+  
++ 내용을 확인할 수 있으며 (로그인시) 좋아요를 누를 수 있음
+  
+![리뷰 디테일 에에올](https://user-images.githubusercontent.com/113163657/224762497-b01e3f09-7d7f-400c-916f-0fdcf73dd161.png)
+  
++ 리뷰 하단에 댓글을 작성할 수 있으며 최근 올라온 글(3개)로 이동할 수 있음
+  
+![디테일 댓글 및 추천글](https://user-images.githubusercontent.com/113163657/224762993-45da7d20-30dc-4a79-8bbb-73d84d79fdc6.png)
+
+### 마이페이지
+  
++ 저장한 글, 발행한 글을 모아볼 수 있음
+  
+![마이페이지 발행글](https://user-images.githubusercontent.com/113163657/224763275-b8afa3c1-b134-4ddc-a817-31ef96a0f271.png)
+
+	
