@@ -98,14 +98,85 @@ public void deleteUser(String idName) {
     }
     reviewRepository.delete(r);
   }
-
   userRepository.delete(user);
-
 }
 ```
 
 ---
 2. 리뷰 작성 & 수정 & 삭제
+
+ReviewController.java 일부
+
+```java
+@PostMapping("/create")
+public String create(ReviewCreateDto dto) throws IOException {
+  Review entity = reviewService.create(dto);
+
+  for (MultipartFile multipartFile : dto.getFiles()) {
+    imageService.saveFile(entity.getId(), multipartFile);
+  }
+
+  if (entity.getStorage() == 0) {
+    return "redirect:/review/main";
+  } else {
+    return "redirect:/review/detail?reviewId=" + entity.getId();
+  }
+  
+@PostMapping("/modify")
+public String modify(ReviewCreateDto dto) {
+  Integer reviewId = reviewService.modify(dto);
+  return "redirect:/review/detail?reviewId=" + reviewId;
+}
+
+@PostMapping("/delete")
+public String delete(Integer reviewId) {
+  reviewService.delete(reviewId);
+  return "redirect:/review/main";
+}
+  
+```
+
+ReviewService.java 
+
+```java
+/**
+ * create 창에서 데이터 저장
+ * @param dto 테이블에 저장할 데이터
+ * @return 객체 리턴
+ */
+public Review create(ReviewCreateDto dto) {
+  Review entity = reviewRepository.save(dto.toEntity());
+  return entity;
+}
+
+public void delete(Integer reviewId) {
+  List<ReviewScore> rs = reviewScoreRepository.findByReviewId(reviewId);
+  for (ReviewScore r : rs) {
+    reviewScoreRepository.deleteById(r.getId());
+  }
+
+  List<Reply> replies = replyRepository.findByReviewIdOrderByIdDesc(reviewId);
+  for (Reply rp : replies) {
+    replyRepository.deleteById(rp.getId());
+  }
+
+  List<Image> images = imageRepository.findByReviewId(reviewId);
+  for (Image i : images) {
+    imageRepository.delete(i);
+  }
+
+  reviewRepository.deleteById(reviewId);
+}
+
+@Transactional // save() 하지않아도 저장됨
+public Integer modify(ReviewCreateDto dto) {
+  Review review = reviewRepository.findById(dto.getReviewId()).get();
+  review.setStorage(1);
+  review.update(dto.getTitle(), dto.getContent(), dto.getScore(), review.getStorage());
+  return dto.getReviewId();
+}
+```
+
 
 ---
 3. 좋아요
