@@ -406,3 +406,72 @@ public String mypage(String idName, Model model) {
   return "/user/mypage";
 }
 ```
+  
+5. 사진 업로드
+  
+ReviewController.java 일부
+  
+```java
+@PostMapping("/create")
+public String create(ReviewCreateDto dto) throws IOException {
+  Review entity = reviewService.create(dto);
+
+  for (MultipartFile multipartFile : dto.getFiles()) {
+    imageService.saveFile(entity.getId(), multipartFile);
+  }
+
+  if (entity.getStorage() == 0) {
+    return "redirect:/review/main";
+  } else {
+    return "redirect:/review/detail?reviewId=" + entity.getId();
+  }
+}
+```
+
+ImageService.java 일부
+  
+```java
+/**
+ * create.html에서 사진 저장할 때 사용 
+ * @param reviewId 외래키로 REVEIW 테이블과 연결 
+ * @param files 업로드할 파일 
+ * @return 기본키 리턴 
+ * @throws IOException
+ */
+public Long saveFile(Integer reviewId, MultipartFile files) throws IOException {
+  if (files.isEmpty()) {
+    return null;
+  }
+
+  Review review = reviewRepository.findById(reviewId).get();
+
+  // Original File Name
+  String originName = files.getOriginalFilename();
+
+  // 사용할 File Name
+  String uuid = UUID.randomUUID().toString();
+
+  // 확장자 추출
+  String extension = originName.substring(originName.lastIndexOf("."));
+
+  // uuid + extension
+  String savedName = uuid + extension;
+
+  // 파일 불러올 때 사용할 경로
+  String savedPath = fileImageDir + savedName;
+
+  Image image = Image.builder()
+      .originName(originName)
+      .fileName(savedName)
+      .filePath(savedPath)
+      .review(review)
+      .build();
+
+  // 로컬에 저장
+  files.transferTo(new File(savedPath));
+
+  Image savedFile = imageRepository.save(image);
+
+  return savedFile.getId();
+}
+```
