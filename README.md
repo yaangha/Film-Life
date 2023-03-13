@@ -13,8 +13,101 @@
 ## 구현 기능
 1. 로그인 & 회원가입 & 탈퇴
 
+join.js 일부
+
+```javascript
+const idNameInput = document.querySelector('#idName');
+const btnJoin = document.querySelector('#btnJoin');
+
+
+idNameInput.addEventListener('change', function () {
+  const idName = idNameInput.value;
+  axios
+  .get('/checkid?idName=' + idName)
+  .then(response => { displayCheckResult(response.data) })
+  .catch(err => { console.log(err); })
+});
+
+function displayCheckResult(data) {
+  const checkIdName = document.querySelector('#checkIdName');
+
+  let str = '';
+  if (data == 'ok') {
+    str += '<div style="color:green; text-align:left;">사용할 수 있는 아이디입니다.</div>';
+    checkIdName.innerHTML = str;
+  } else {
+    str += '<div style="color:red; text-align:left;">사용할 수 없는 아이디입니다.</div>';
+    checkIdName.innerHTML = str;
+  }
+}
+
+const passwordInput= document.querySelector('#password');
+const pwChkInput = document.querySelector('#pwChk');
+
+pwChk.addEventListener('change', function () {
+  password = passwordInput.value;
+  pwChk = pwChkInput.value;
+  console.log(pwChk);
+  console.log(password);
+  const checkPw = document.querySelector('#checkPw');
+  let str = '';
+  if (password == pwChk) {
+    str += '<div style="color:green; text-align:left;">비밀번호가 일치합니다.</div>';
+    checkPw.innerHTML = str;
+  } else {
+    str += '<div style="color:red; text-align:left;">비밀번호가 일치하지 않습니다.</div>';
+    checkPw.innerHTML = str;
+  }
+});
+```
+
+UserController.java 일부
+
+```java
+@GetMapping("/deleteUser")
+public String deleteUser(String idName) {
+  userService.deleteUser(idName);
+  return "redirect:/logout";
+}
+```
+
+UsersService.java 일부
+
+```java
+/**
+ * 탈퇴시 사용 
+ * @param idName 탈퇴할 사용자 아이디 
+ */
+public void deleteUser(String idName) {
+  Users user = userRepository.findByIdName(idName).get();
+  List<ReviewScore> rs = reviewScoreRepository.findByUsersId(user.getId());
+  for (ReviewScore r : rs) {
+    reviewScoreRepository.delete(r);
+  }
+
+  List<Reply> replies = replyRepository.findByUsersId(user.getId());
+  for (Reply r : replies) {
+    replyRepository.delete(r);
+  }
+
+  List<Review> reviews = reviewRepository.findByAuthorOrderByIdDesc(idName);
+  for (Review r : reviews) {
+    List<Image> imageList = imageRepository.findByReviewId(r.getId());
+    for (Image i : imageList) {
+      imageRepository.delete(i);
+    }
+    reviewRepository.delete(r);
+  }
+
+  userRepository.delete(user);
+
+}
+```
+
+---
 2. 리뷰 작성 & 수정 & 삭제
 
+---
 3. 좋아요
 
 detail.html 일부
@@ -104,6 +197,7 @@ public ResponseEntity<Integer> deleteHeart(@AuthenticationPrincipal UserSecurity
 }
 ```
 
+---
 4. 댓글
 
 reply.js 일부
@@ -221,7 +315,7 @@ public List<ReplyReadDto> readReplies(Integer reviewId) {
 }
 ```
 	
-	
+---
 5. 검색
 	
 ReviewController.java 일부
@@ -268,6 +362,7 @@ public List<ReviewReadDto> search(String type, String keyword) {
 }
 ```
 
+---
 6. 작성글 모아보기
 	
 mypage.html 일부
