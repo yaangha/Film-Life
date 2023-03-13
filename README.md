@@ -348,7 +348,7 @@ mypage.html  <script> 부분
 
 UserController.java 일부
 	
-```java
+java
 @GetMapping("/mypage")
 public String mypage(String idName, Model model) {
 	List<Review> reviewAll = reviewService.readUser(idName);
@@ -405,5 +405,5 @@ public String mypage(String idName, Model model) {
 	model.addAttribute("reviewRelease", reviewRelease);
 	return "/user/mypage";
 }
-```
+
 	
