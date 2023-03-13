@@ -641,3 +641,13 @@ public Long saveFile(Integer reviewId, MultipartFile files) throws IOException {
   return savedFile.getId();
 }
 ```
+
+## 구성 화면
+#### 메인
++ 메인 화면 -> 중앙 메인 이미지를 누르면 [씨네21] 관련 기사로 이동
+  
+![메인1](https://user-images.githubusercontent.com/113163657/224760341-9902d642-0487-4c54-88d1-c385742db10c.png)
+  
++ 메인 화면 -> 리뷰 6개 이상일 때는 더보기 버튼을 통해 전체 리뷰를 확인할 수 있음
+  
+![메인2](https://user-images.githubusercontent.com/113163657/224760439-897420c2-c979-41f6-abb8-bfd61610c4a2.png)
