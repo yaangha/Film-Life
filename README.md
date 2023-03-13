@@ -17,7 +17,7 @@
 
 3. 좋아요
 
-```
+```html
 <div style="display: inline-block; vertical-align: top;">
   <th:block sec:authorize="isAuthenticated()">
     <span id="loginUser" sec:authentication="principal.idName" style="display: none;"></span>
