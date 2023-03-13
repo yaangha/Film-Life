@@ -345,4 +345,65 @@ mypage.html  <script> 부분
 	})
 </script>
 ```
+
+UserController.java 일부
+	
+```java
+@GetMapping("/mypage")
+public String mypage(String idName, Model model) {
+	List<Review> reviewAll = reviewService.readUser(idName);
+	List<Image> imageList = imageService.readImg(idName);
+	log.info("imageList size = {}", imageList);
+	List<ReviewReadDto> reviewRelease = new ArrayList<>();
+	List<ReviewReadDto> reviewSave = new ArrayList<>();
+
+	for (Review r : reviewAll) {
+		if (r.getStorage() == 0) {
+			if (imageList != null) {
+				for (Image i : imageList) {
+					if (r.getId() == i.getReview().getId()) {
+						ReviewReadDto dto = ReviewReadDto.fromEntity(r, null, null, null, i.getId());
+						reviewSave.add(dto);
+						break;
+					}
+
+					ReviewReadDto dto = ReviewReadDto.fromEntity(r, null, null, null, null);
+					reviewSave.add(dto);
+					break;
+				}
+			} else {
+				ReviewReadDto dto = ReviewReadDto.fromEntity(r, null, null, null, null);
+				reviewSave.add(dto);
+			}
+		} else {
+			if (imageList != null) {
+				for (Image i : imageList) {
+					if (r.getId() == i.getReview().getId()) {
+						ReviewReadDto dto = ReviewReadDto.fromEntity(r, null, null, null, i.getId());
+						reviewRelease.add(dto);
+						break;
+					}
+
+					ReviewReadDto dto = ReviewReadDto.fromEntity(r, null, null, null, null);
+					reviewRelease.add(dto);
+					break;
+				}
+			} else {
+				ReviewReadDto dto = ReviewReadDto.fromEntity(r, null, null, null, null);
+				reviewRelease.add(dto);
+			}
+		}
+	}
+
+	Integer releaseSize = reviewRelease.size();
+	Integer saveSize = reviewSave.size();
+	log.info("saveSize = {}", saveSize);
+	model.addAttribute("releaseSize", releaseSize);
+	model.addAttribute("saveSize", saveSize);
+	model.addAttribute("idName", idName);
+	model.addAttribute("reviewSave", reviewSave);
+	model.addAttribute("reviewRelease", reviewRelease);
+	return "/user/mypage";
+}
+```
 	
