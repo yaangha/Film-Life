@@ -1,7 +1,8 @@
 # 🎥 영화, 기록하다(Film Life)
 ## 개요
-일정: 2023년 2월 20일 ~ (진행중)<br>
-인원: 1인 개인 프로젝트
+**소개** 영화 리뷰를 작성하고 댓글로 사용자들끼리 소통할 수 있는 사이트입니다.<br>
+**일정** 2023년 2월 20일 ~ (진행중)<br>
+**인원** 1인 개인 프로젝트
 
 ## 사용 기술 및 개발환경
 + Java
@@ -139,11 +140,6 @@ public String delete(Integer reviewId) {
 ReviewService.java 
 
 ```java
-/**
- * create 창에서 데이터 저장
- * @param dto 테이블에 저장할 데이터
- * @return 객체 리턴
- */
 public Review create(ReviewCreateDto dto) {
   Review entity = reviewRepository.save(dto.toEntity());
   return entity;
@@ -168,7 +164,7 @@ public void delete(Integer reviewId) {
   reviewRepository.deleteById(reviewId);
 }
 
-@Transactional // save() 하지않아도 저장됨
+@Transactional 
 public Integer modify(ReviewCreateDto dto) {
   Review review = reviewRepository.findById(dto.getReviewId()).get();
   review.setStorage(1);
@@ -219,11 +215,11 @@ detail.html 중 <script> 부분
       const reviewId = Number(reviewIdInput);
 
       axios.post('/api/review/heart', null, { params: {reviewId} })
-  .then(response => { 
-    console.log(response.data); 
-    changeFull(response.data);
-  })
-  .catch(error => { console.log(error); })
+      .then(response => { 
+        console.log(response.data); 
+        changeFull(response.data);
+      })
+      .catch(error => { console.log(error); })
     })
 
     function changeFull(data) {
@@ -235,11 +231,11 @@ detail.html 중 <script> 부분
     btnHeartDelete.addEventListener('click', () => {
 
       axios.post('/api/review/heartDelete', null, { params: {reviewId} })
-  .then(response => {
-    console.log(response.data);
-    changeHeart(response.data);
-  })
-  .catch(error => { console.log(error); })
+      .then(response => {
+        console.log(response.data);
+        changeHeart(response.data);
+      })
+      .catch(error => { console.log(error); })
     })
 
     function changeHeart(data) {
@@ -256,7 +252,6 @@ ReviewRestController.java 일부
 ```java
 @PostMapping("/api/review/heart")
 public ResponseEntity<Integer> addHeart(@AuthenticationPrincipal UserSecurityDto userSecurityDto, Integer reviewId) {
-  // log.info("Integer reviewId = {}", reviewId);
   Integer result = reviewService.addHeart(reviewId, userSecurityDto.getIdName());
   return ResponseEntity.ok(result);
 }
