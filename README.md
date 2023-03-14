@@ -12,9 +12,9 @@
 + JavaScript
 
 ## 구현 기능
-1. 로그인 & 회원가입 & 탈퇴
++ 로그인 & 회원가입 & 탈퇴
 
-join.js 일부
+> join.js 일부
 
 ```javascript
 const idNameInput = document.querySelector('#idName');
@@ -62,7 +62,7 @@ pwChk.addEventListener('change', function () {
 });
 ```
 
-UserController.java 일부
+> UserController.java 일부
 
 ```java
 @GetMapping("/deleteUser")
@@ -72,7 +72,7 @@ public String deleteUser(String idName) {
 }
 ```
 
-UsersService.java 일부
+> UsersService.java 일부
 
 ```java
 /**
@@ -104,9 +104,9 @@ public void deleteUser(String idName) {
 ```
 
 ---
-2. 리뷰 작성 & 수정 & 삭제
++ 리뷰 작성 & 수정 & 삭제
 
-ReviewController.java 일부
+> ReviewController.java 일부
 
 ```java
 @PostMapping("/create")
@@ -137,7 +137,7 @@ public String delete(Integer reviewId) {
   
 ```
 
-ReviewService.java 
+> ReviewService.java 
 
 ```java
 public Review create(ReviewCreateDto dto) {
@@ -175,9 +175,9 @@ public Integer modify(ReviewCreateDto dto) {
 
 
 ---
-3. 좋아요
++ 좋아요
 
-detail.html 일부
+> detail.html 일부
 
 ```html
 <div style="display: inline-block; vertical-align: top;">
@@ -198,7 +198,7 @@ detail.html 일부
 </div>
 ```
 
-detail.html 중 <script> 부분
+> detail.html 중 <script> 부분
 
 ```html
 <script>
@@ -247,7 +247,7 @@ detail.html 중 <script> 부분
 </script>
 ```
 
-ReviewRestController.java 일부
+> ReviewRestController.java 일부
   
 ```java
 @PostMapping("/api/review/heart")
@@ -264,9 +264,9 @@ public ResponseEntity<Integer> deleteHeart(@AuthenticationPrincipal UserSecurity
 ```
 
 ---
-4. 댓글
++ 댓글
 
-reply.js 일부
+> reply.js 일부
 	
 ```javascript
 function readAllReplies() {
@@ -331,7 +331,7 @@ if (btnReply) {
   }
 ```
 
-ReplyRestController.java 일부
+> ReplyRestController.java 일부
 	
 ```java
 @PostMapping
@@ -347,7 +347,7 @@ public ResponseEntity<List<ReplyReadDto>> readAllReplies(@PathVariable Integer r
 }
 ```
 
-ReplyService.java 일부
+> ReplyService.java 일부
 	
 ```java
 /**
@@ -382,9 +382,9 @@ public List<ReplyReadDto> readReplies(Integer reviewId) {
 ```
 	
 ---
-5. 검색
++ 검색
 	
-ReviewController.java 일부
+> ReviewController.java 일부
 	
 ```java
 @PostMapping("/search")
@@ -395,7 +395,7 @@ public String search(String type, String keyword, Model model) {
 }
 ```
 	
-ReviewService.java 일부
+> ReviewService.java 일부
 	
 ```java
 /**
@@ -429,9 +429,9 @@ public List<ReviewReadDto> search(String type, String keyword) {
 ```
 
 ---
-6. 작성글 모아보기
++ 작성글 모아보기
 	
-mypage.html 일부
+> mypage.html 일부
 	
 ```html
 <div style="width:100%; margin-bottom: 15px;">
@@ -478,7 +478,7 @@ mypage.html 일부
 </div>
 ```
 
-mypage.html  <script> 부분
+> mypage.html  <script> 부분
 
 ```html
 <script>
@@ -507,7 +507,7 @@ mypage.html  <script> 부분
 </script>
 ```
 
-UserController.java 일부
+> UserController.java 일부
 	
 ```java
 @GetMapping("/mypage")
@@ -568,9 +568,9 @@ public String mypage(String idName, Model model) {
 }
 ```
   
-5. 사진 업로드
++ 사진 업로드
   
-ReviewController.java 일부
+> ReviewController.java 일부
   
 ```java
 @PostMapping("/create")
@@ -589,7 +589,7 @@ public String create(ReviewCreateDto dto) throws IOException {
 }
 ```
 
-ImageService.java 일부
+> ImageService.java 일부
   
 ```java
 /**
@@ -647,6 +647,7 @@ public Long saveFile(Integer reviewId, MultipartFile files) throws IOException {
   
 ![메인2](https://user-images.githubusercontent.com/113163657/224760439-897420c2-c979-41f6-abb8-bfd61610c4a2.png)
 
+---
 ### 리뷰 상세 페이지
   
 + 내용을 확인할 수 있으며 (로그인시) 좋아요를 누를 수 있음
@@ -657,10 +658,9 @@ public Long saveFile(Integer reviewId, MultipartFile files) throws IOException {
   
 ![디테일 댓글 및 추천글](https://user-images.githubusercontent.com/113163657/224762993-45da7d20-30dc-4a79-8bbb-73d84d79fdc6.png)
 
+---
 ### 마이페이지
   
 + 저장한 글, 발행한 글을 모아볼 수 있음
   
 ![마이페이지 발행글](https://user-images.githubusercontent.com/113163657/224763275-b8afa3c1-b134-4ddc-a817-31ef96a0f271.png)
-
-	
