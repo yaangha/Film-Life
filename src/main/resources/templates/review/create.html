@@ -42,7 +42,7 @@
 
 <div layout:fragment="content">
 
-	<div style="width:100%; text-align:center;"><!-- main content -->
+	<div style="width:100%; margin: auto;"><!-- main content -->
 		<div>
 			<form id="formCreate" enctype="multipart/form-data">
 				<input id="author" name="author" type="hidden" th:value="${ #authentication.principal.idName }" />
@@ -52,10 +52,10 @@
 				<div style="width:70%; margin: auto;">
 					<textarea id="content" name="content" style="width: 100%; height:500px; font-size: 15px; border: none; resize: none; margin-top: 15px; line-height: 1.5em;" placeholder="내용을 입력하세요(img)"></textarea>
 				</div>
-				<input id="image" type="file" multiple="multiple" onchange="alertImage()" name="files"/>
-				<div id="images">
-					
+				<div style="width:70%; text-align: left; margin: auto; padding: 15px 0;">
+				<input id="image" type="file" multiple="multiple" onchange="setThumbnail(event)" name="files"/>
 				</div>
+				<div id="images" style="width:70%; text-align: left; margin: auto;"></div>
 				<div style="width:70%; text-align: left; margin: auto;">
 					<span class="star">
 						★★★★★
@@ -82,9 +82,15 @@
 		}
 	</script>
 	<script>
-	function alertImage() {
-		const image = document.querySelector('#image').value;
-		console.log(image);
+	function setThumbnail(event) {
+		var reader = new FileReader();
+		reader.onload = function(event) {
+			var img = document.createElement("img");
+			img.setAttribute("src", event.target.result);
+			document.querySelector("div#images").appendChild(img);
+			img.style.width = "500px";
+		};
+		reader.readAsDataURL(event.target.files[0]);
 	}	
 	</script>
 </th:block>

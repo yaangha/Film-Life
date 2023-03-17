@@ -31,7 +31,9 @@ import com.project.film.service.UsersService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RequiredArgsConstructor
 @Controller
 @RequestMapping("/review")
@@ -62,7 +64,6 @@ public class ReviewController {
 	@PostMapping("/create")
 	public String create(ReviewCreateDto dto) throws IOException {
 		Review entity = reviewService.create(dto);
-		
 		for (MultipartFile multipartFile : dto.getFiles()) {
 			imageService.saveFile(entity.getId(), multipartFile);
 		}
