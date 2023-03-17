@@ -100,6 +100,8 @@ public class ReviewController {
 	@GetMapping("/modify")
 	public void modify(Integer reviewId, Model model) {
 		Review review = reviewService.read(reviewId);
+		List<Image> imageList = imageService.readImg(review.getAuthor());
+		model.addAttribute("imageList", imageList);
 		model.addAttribute("review", review);
 	}
 	
