@@ -96,4 +96,9 @@ public class ImageService {
 		return imageList;
 	}
 	
+	// ReviewId로 이미지 찾기  
+	public List<Image> readByReviewId(Integer reviewId) {
+		return imageRepository.findByReviewId(reviewId);
+	}
+	
 }

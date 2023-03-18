@@ -88,6 +88,9 @@ public class ReviewController {
 		model.addAttribute("reviewDto",reviewDto);
 		model.addAttribute("review", review);
 		
+		List<Image> images = imageService.readByReviewId(reviewId);
+		model.addAttribute("images", images);
+		
 		List<ReviewReadDto> reviewAll = reviewService.readReleaseAll();
 		List<ReviewReadDto> otherReview = new ArrayList<>();
 		

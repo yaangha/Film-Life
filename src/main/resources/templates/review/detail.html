@@ -112,8 +112,8 @@
 		</div>
 		
 		<div th:unless="${ reviewDto.imageId } == null">
-			<div style="margin: 10px 0;">
-				<img th:src="|/review/images/${reviewDto.imageId}|" style="width: 50%; obect-fit: cover;"/>
+			<div th:each="image : ${ images }" style="margin: 10px 0;">
+				<img th:src="|/review/images/${image.id}|" style="width: 50%; obect-fit: cover;"/>
 			</div>
 		</div>
 		
