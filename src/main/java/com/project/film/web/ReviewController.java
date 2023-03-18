@@ -31,7 +31,9 @@ import com.project.film.service.UsersService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RequiredArgsConstructor
 @Controller
 @RequestMapping("/review")
@@ -62,7 +64,6 @@ public class ReviewController {
 	@PostMapping("/create")
 	public String create(ReviewCreateDto dto) throws IOException {
 		Review entity = reviewService.create(dto);
-		
 		for (MultipartFile multipartFile : dto.getFiles()) {
 			imageService.saveFile(entity.getId(), multipartFile);
 		}
@@ -87,6 +88,9 @@ public class ReviewController {
 		model.addAttribute("reviewDto",reviewDto);
 		model.addAttribute("review", review);
 		
+		List<Image> images = imageService.readByReviewId(reviewId);
+		model.addAttribute("images", images);
+		
 		List<ReviewReadDto> reviewAll = reviewService.readReleaseAll();
 		List<ReviewReadDto> otherReview = new ArrayList<>();
 		
@@ -100,6 +104,8 @@ public class ReviewController {
 	@GetMapping("/modify")
 	public void modify(Integer reviewId, Model model) {
 		Review review = reviewService.read(reviewId);
+		List<Image> imageList = imageService.readImg(review.getAuthor());
+		model.addAttribute("imageList", imageList);
 		model.addAttribute("review", review);
 	}
 	

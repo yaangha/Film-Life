@@ -37,12 +37,18 @@
 			overflow: hidden;
 			pointer-events: none;
 		}
+		
+		label {
+			font-size: small;
+			border: thin solid black;
+			padding: 3px;
+		}
 	</style>
 </head>
 
 <div layout:fragment="content">
 
-	<div style="width:100%; text-align:center;"><!-- main content -->
+	<div style="width:100%; margin: auto;"><!-- main content -->
 		<div>
 			<form id="formCreate" enctype="multipart/form-data">
 				<input id="author" name="author" type="hidden" th:value="${ #authentication.principal.idName }" />
@@ -52,7 +58,13 @@
 				<div style="width:70%; margin: auto;">
 					<textarea id="content" name="content" style="width: 100%; height:500px; font-size: 15px; border: none; resize: none; margin-top: 15px; line-height: 1.5em;" placeholder="내용을 입력하세요(img)"></textarea>
 				</div>
-				<input type="file" multiple="multiple" name="files"/>
+				<div style="width:70%; text-align: left; margin: auto; padding: 15px 0;">
+				<label for="image">사진선택</label>
+				<input id="image" type="file" multiple="multiple" onchange="setThumbnail(this)" name="files" style="display: none;"/>
+				</div>
+				<div id="images" style="width:70%; text-align: left; margin: auto;"></div>
+				<ul class="imagesList">
+				</ul>
 				<div style="width:70%; text-align: left; margin: auto;">
 					<span class="star">
 						★★★★★
@@ -72,11 +84,64 @@
 </div><!-- fragment end -->
 
 <th:block layout:fragment="script">
-	<script th:src="@{ /js/create.js }"></script>
+	<script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>	<script th:src="@{ /js/create.js }"></script>
 	<script>
 		const drawStar = (target) => {
 			document.querySelector(`.star span`).style.width = `${target.value * 20}%`;
 		}
+	</script>
+	<!-- <script>
+	function setThumbnail(event) {
+		var reader = new FileReader();
+		reader.onload = function(event) {
+			var img = document.createElement("img");
+			img.setAttribute("src", event.target.result);
+			document.querySelector("div#images").appendChild(img);
+			img.style.width = "500px";
+			
+		};
+		reader.readAsDataURL(event.target.files[0]);
+	}	
+	</script> -->
+	<script> // image 레이아웃 수정 필요       
+	function setThumbnail(event) {
+		for (let i = 0; i < event.files.length; i++) {
+			console.log("in");
+			if (event.files && event.files[i]) {
+				let reader = new FileReader();
+				let fullname = document.getElementById("image").files[i].name;
+				
+				let node = document.createElement('li');
+				let tmp = `
+				<li><img src="" style="width: 500px;">
+					${fullname}
+					<input type="button" class="btnDelete" value="DELETE"/>
+				</li>
+				`
+				
+				node.innerHTML = tmp;
+				
+				node.querySelector('.btnDelete').onclick = function () {
+					node.remove();
+					const dataTransfer = new DataTransfer();
+					let trans = $('#image')[0].files;
+					let filearray = Array.from(trans);
+					filearray.splice(i, 1);
+					filearray.forEach(file => {
+						dataTransfer.items.add(file);
+					});
+					$('#image')[0].files = dataTransfer.files
+				}
+				
+				reader.onload = function (e) {
+					document.querySelector('.imagesList').appendChild(node);
+					node.querySelector("img").setAttribute('src', e.target.result);
+				}
+				
+				reader.readAsDataURL(event.files[i]);
+			}
+		}
+	}
 	</script>
 </th:block>
 
