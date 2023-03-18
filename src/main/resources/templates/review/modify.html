@@ -57,6 +57,7 @@
 				<div th:each="image : ${imageList}">
 					<div style="margin: 10px 0;">
 						<img th:src="|/review/images/${image.id}|" style="width: 50%; obect-fit: cover;"/>
+						<button>DELETE</button>
 					</div>
 				</div>
 				<div style="width:70%; text-align: left; margin: auto;">
