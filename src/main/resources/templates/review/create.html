@@ -89,6 +89,9 @@
 			img.setAttribute("src", event.target.result);
 			document.querySelector("div#images").appendChild(img);
 			img.style.width = "500px";
+			
+			var button = document.createElement("button");
+			button.setAttribute("text", "delete");
 		};
 		reader.readAsDataURL(event.target.files[0]);
 	}	

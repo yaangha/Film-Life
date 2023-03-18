@@ -103,7 +103,7 @@
 			</div>
 			<div style="color: gray; font-size: small;">
 				<div th:text="${ 'by ' + review.author }" style="display: inline-block;"></div>
-				<div style="display: inline-block;"><i class="bi bi-alarm" style="margin: 0 3px;"></i><span th:text="${ #temporals.format(review.createdTime, 'yyyy/MM/dd') }"></span></div>
+				<div style="display: inline-block;"><i class="bi bi-alarm" style="margin: 0 3px;"></i><span th:text="${ #temporals.format(review.createdTime, 'yyyy/MM/dd hh:mm') }"></span></div>
 			</div>
 		</div>
 		<div style="color: gray; font-size: small; text-align: right;">

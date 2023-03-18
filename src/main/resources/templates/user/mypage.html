@@ -54,7 +54,7 @@
 					<div class="contents" th:text="${ reviewRelease.title }" style="font-size: 21px; padding-bottom: 5px;"></div>
 					<div class="contents" th:text="${ reviewRelease.content }" style="color: silver; padding-bottom: 35px;"></div>
 					<div style="font-size: small;">
-						<i class="bi bi-alarm" style="margin-right: 3px;"></i><span th:text="${ #temporals.format(reviewRelease.createdTime, 'yyyy/MM/dd') }"></span>
+						<i class="bi bi-alarm" style="margin-right: 3px;"></i><span th:text="${ #temporals.format(reviewRelease.createdTime, 'yyyy/MM/dd hh:mm') }"></span>
 					</div>
 				</div>
 				<div style="display:inline-block; width: 15%;">
@@ -73,7 +73,7 @@
 					<div class="contents" th:text="${ reviewSave.title }" style="font-size: 21px; padding-bottom: 5px;"></div>
 					<div class="contents" th:text="${ reviewSave.content }" style="color: silver; padding-bottom: 35px;"></div>
 					<div style="font-size: small;">
-						<i class="bi bi-alarm" style="margin-right: 3px;"></i><span th:text="${ #temporals.format(reviewSave.createdTime, 'yyyy/MM/dd') }"></span>
+						<i class="bi bi-alarm" style="margin-right: 3px;"></i><span th:text="${ #temporals.format(reviewSave.createdTime, 'yyyy/MM/dd hh:mm') }"></span>
 					</div>
 				</div>
 				<div style="display:inline-block; width: 15%;">
