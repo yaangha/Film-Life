@@ -106,7 +106,6 @@
 	<script> // image 레이아웃 수정 필요       
 	function setThumbnail(event) {
 		for (let i = 0; i < event.files.length; i++) {
-			console.log("in");
 			if (event.files && event.files[i]) {
 				let reader = new FileReader();
 				let fullname = document.getElementById("image").files[i].name;
