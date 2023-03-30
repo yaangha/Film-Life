@@ -179,6 +179,7 @@ public class ReviewService {
 	 * @param response
 	 */
 	public void updateWatchCount(String idName, Integer reviewId, HttpServletRequest request, HttpServletResponse response) {
+		log.info("reviewService updateWatchCount 1");
 		Users user = null;
 		if (idName.equals("Anonymous")) {
 			if (usersRepository.findByIdName(idName).get() != null) {
@@ -190,7 +191,7 @@ public class ReviewService {
 		} else {
 			user = usersRepository.findByIdName(idName).get();
 		}
-		
+		log.info("user check!!");
 		Review review = reviewRepository.findById(reviewId).get();
 		ReviewScore reviewScore = reviewScoreRepository.findScore(reviewId, user.getId());
 		if (reviewScore == null) {
