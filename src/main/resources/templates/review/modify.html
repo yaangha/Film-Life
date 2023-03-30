@@ -54,9 +54,10 @@
 				<div style="width:70%; margin: auto;">
 					<textarea id="content" name="content" th:text="${ review.content }" style="width: 100%; height:500px; font-size: 15px; border: none; resize: none; margin-top: 15px; line-height: 1.5em;" placeholder="내용을 입력하세요(img)" required></textarea>
 				</div>
-				<div th:each="image : ${imageList}">
+				<div id="imageList" th:each="image : ${imageList}">
 					<div style="margin: 10px 0;">
 						<img th:src="|/review/images/${image.id}|" style="width: 50%; obect-fit: cover;"/>
+						<button>DELETE</button>
 					</div>
 				</div>
 				<div style="width:70%; text-align: left; margin: auto;">
@@ -101,6 +102,12 @@
 		const drawStar = (target) => {
 			document.querySelector(`.star span`).style.width = `${target.value * 20}%`;
 		}
+	</script>
+	<script>
+	const imageList = document.querySelector('#imageList');
+	for(let i = 0; i < imageList.length; i++) {
+		console.log(i);
+	}
 	</script>
 </th:block>
 

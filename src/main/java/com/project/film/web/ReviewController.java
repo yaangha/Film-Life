@@ -76,7 +76,8 @@ public class ReviewController {
 	}
 	
 	@GetMapping("/detail")
-	public void detail(@AuthenticationPrincipal UserSecurityDto userSecurityDto, Integer reviewId, Model model) {
+	public void detail(@AuthenticationPrincipal UserSecurityDto userSecurityDto, Integer reviewId, Model model) {		
+		log.info("reviewController detail 2");
 		Review review = reviewService.read(reviewId);
 		if (userSecurityDto != null) {
 			Users user = userService.read(userSecurityDto.getIdName());
@@ -104,7 +105,7 @@ public class ReviewController {
 	@GetMapping("/modify")
 	public void modify(Integer reviewId, Model model) {
 		Review review = reviewService.read(reviewId);
-		List<Image> imageList = imageService.readImg(review.getAuthor());
+		List<Image> imageList = imageService.readByReviewId(reviewId);
 		model.addAttribute("imageList", imageList);
 		model.addAttribute("review", review);
 	}
@@ -131,10 +132,12 @@ public class ReviewController {
 	@GetMapping("/watchCount")
 	@ResponseBody
 	public void watchCount(@AuthenticationPrincipal UserSecurityDto dto, Integer reviewId, HttpServletRequest request, HttpServletResponse response) {
+		log.info("reviewId={}", reviewId);
 		if (dto == null) {
 			reviewService.updateWatchCount("Anonymous", reviewId, request, response);
 		} else {
 			reviewService.updateWatchCount(dto.getIdName(), reviewId, request, response);
 		}
 	}
+	
 }
