@@ -158,7 +158,7 @@
 							<div style="width: 350px; height: 250px; margin: 5px 0; border: 1px solid black;"></div>	
 						</div>
 						<div th:unless="${ reviews.imageId } == null">
-							<img th:src="|/review/images/${reviews.imageId}|" style="width: 350px; height: 250px; margin: 5px 0; obect-fit: cover;"/>
+							<img th:src="|/review/images/${reviews.imageId}|" style="width: 350px; height: 250px; margin: 5px 0; object-fit: cover;"/>
 						</div>
 						<div id="title" style="width: 350px; font-weight: bold; font-size: 18px;" th:text="${ reviews.title }"></div>
 						<div th:text="${ 'by ' + reviews.idName }" style="font-size: small; margin-bottom: 3px;"></div>
@@ -190,7 +190,7 @@
 							<div style="width: 350px; height: 250px; margin: 5px 0; border: 1px solid black;"></div>	
 						</div>
 						<div th:unless="${ reviews.imageId } == null">
-							<img th:src="|/review/images/${reviews.imageId}|" style="width: 350px; height: 250px; margin: 5px 0; obect-fit: cover;"/>
+							<img th:src="|/review/images/${reviews.imageId}|" style="width: 350px; height: 250px; margin: 5px 0; object-fit: cover;"/>
 						</div>
 						<div id="title" style="width: 350px; font-weight: bold; font-size: 18px;" th:text="${ reviews.title }"></div>
 						<div th:text="${ 'by ' + reviews.idName }" style="font-size: small; margin-bottom: 3px;"></div>
