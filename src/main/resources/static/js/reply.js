@@ -15,7 +15,7 @@ window.addEventListener('DOMContentLoaded', () => {
 	
 	function updateReplyList(data) {
 			const divReplies = document.querySelector('#replies');
-			
+			const loginUser = document.querySelector('#loginUser').innerText;
 			let str = '';
 			for (let r of data) {
 				str += '<div style="border-top: thin solid silver; padding: 20px 10px;">'
@@ -23,9 +23,35 @@ window.addEventListener('DOMContentLoaded', () => {
 					+ '<span>' + r.writer + '</span>'
 					+ '</div>'
 					+ '<div style="font-size: 15px;">' + r.replyText + '</div>'
-					+ '</div>'
+				if (r.writer == loginUser) {
+					str += `<button class="btnModifies" data-rid="${r.replyId}">MODIFY</button>`
+						+ `<button class="btnDeletes" data-rid="${r.replyId}">DELETE</button>`
+				}
+				str += '</div>'
 			}
 			divReplies.innerHTML = str;
+			
+			const btnModifies = document.querySelectorAll('.btnModifies');
+			const btnDeletes = document.querySelectorAll('.btnDeletes');
+			
+			btnModifies.forEach(btn => {
+				btn.addEventListener('click', modifyReply);
+			})
+			
+			btnDeletes.forEach(btn => {
+				btn.addEventListener('click', deleteReply);
+			})
+	}
+	
+	function modifyReply(event) {
+		const rid = event.target.getAttribute('data-rid');
+		alert(rid);
+	}
+	
+	function deleteReply(event) {
+		const rid = event.target.getAttribute('data-rid');
+		alert(rid);
+		
 	}
 	
 	const btnReply = document.querySelector('#btnReply');
