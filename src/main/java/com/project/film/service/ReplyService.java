@@ -55,4 +55,11 @@ public class ReplyService {
 				.toList();
 	}
 
+	public Integer delete(Integer replyId) {
+		Integer reviewId = replyRepository.findById(replyId).get().getReview().getId();
+		replyRepository.deleteById(replyId);
+		Integer sizeList = replyRepository.findByReviewIdOrderByIdDesc(reviewId).size();
+		return sizeList;
+	}
+
 }

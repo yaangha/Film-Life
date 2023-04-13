@@ -50,7 +50,17 @@ window.addEventListener('DOMContentLoaded', () => {
 	
 	function deleteReply(event) {
 		const rid = event.target.getAttribute('data-rid');
-		alert(rid);
+		
+		const result = confirm('삭제하시겠습니까?');
+		if (result) {
+			axios
+			.delete('/api/reply/' + rid)
+			.then(response => {
+				readAllReplies();
+				document.querySelector('#countReply').innerText = response.data;
+			})
+			.catch(err => { console.log(err) })
+		}
 		
 	}
 	
