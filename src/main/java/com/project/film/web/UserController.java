@@ -53,7 +53,7 @@ public class UserController {
 	public String mypage(String idName, Model model) {
 		List<Review> reviewAll = reviewService.readUser(idName);
 		List<Image> imageList = imageService.readImg(idName);
-		log.info("imageList size = {}", imageList);
+		log.info("imageList size = {}", imageList.size());
 		List<ReviewReadDto> reviewRelease = new ArrayList<>();
 		List<ReviewReadDto> reviewSave = new ArrayList<>();
 		

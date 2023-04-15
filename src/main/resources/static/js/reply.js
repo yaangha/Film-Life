@@ -15,14 +15,13 @@ window.addEventListener('DOMContentLoaded', () => {
 	
 	function updateReplyList(data) {
 			const divReplies = document.querySelector('#replies');
-			const loginUser = document.querySelector('#loginUser').innerText;
 			let str = '';
 			for (let r of data) {
 				str += '<div style="border-top: thin solid silver; padding: 20px 10px;">'
 					+ '<div style="font-size: small; color: gray; margin-bottom: 5px;">'
 					+ '<span>' + r.writer + '</span>'
 					+ '</div>'
-					+ '<div style="font-size: 15px;">' + r.replyText + '</div>'
+					+ `<input class="replyInputs" style="font-size: 17px; outline: none; border: none;" value="${r.replyText}" readonly>`
 				if (r.writer == loginUser) {
 					str += `<button class="btnModifies" data-rid="${r.replyId}">MODIFY</button>`
 						+ `<button class="btnDeletes" data-rid="${r.replyId}">DELETE</button>`
@@ -44,7 +43,10 @@ window.addEventListener('DOMContentLoaded', () => {
 	}
 	
 	function modifyReply(event) {
+		const replyInput = document.querySelector('.replyInputs');
 		const rid = event.target.getAttribute('data-rid');
+		replyInput.readonly = false;
+		
 		alert(rid);
 	}
 	
