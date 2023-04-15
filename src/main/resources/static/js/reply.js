@@ -43,11 +43,12 @@ window.addEventListener('DOMContentLoaded', () => {
 	}
 	
 	function modifyReply(event) {
-		const replyInput = document.querySelector('.replyInputs');
+		// (TODO)현재 페이지에서 수정할지 모달창을 통해 수정할지 
 		const rid = event.target.getAttribute('data-rid');
-		replyInput.readonly = false;
-		
+		const modifyDiv = document.querySelector('#modifyDiv');
 		alert(rid);
+		let str = '<div><input type="text"></div>';
+		modifyDiv.innerHTML = str;
 	}
 	
 	function deleteReply(event) {

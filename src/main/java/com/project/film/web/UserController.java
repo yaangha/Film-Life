@@ -53,12 +53,11 @@ public class UserController {
 	public String mypage(String idName, Model model) {
 		List<Review> reviewAll = reviewService.readUser(idName);
 		List<Image> imageList = imageService.readImg(idName);
-		log.info("imageList size = {}", imageList.size());
 		List<ReviewReadDto> reviewRelease = new ArrayList<>();
 		List<ReviewReadDto> reviewSave = new ArrayList<>();
 		
 		for (Review r : reviewAll) {
-			if (r.getStorage() == 0) {
+			if (r.getStorage() == 0) { // 저장된 글이라면  
 				if (imageList != null) {
 					for (Image i : imageList) {
 						if (r.getId() == i.getReview().getId()) {
@@ -66,16 +65,12 @@ public class UserController {
 							reviewSave.add(dto);
 							break;
 						}
-						
-						ReviewReadDto dto = ReviewReadDto.fromEntity(r, null, null, null, null);
-						reviewSave.add(dto);
-						break;
 					}
 				} else {
 					ReviewReadDto dto = ReviewReadDto.fromEntity(r, null, null, null, null);
 					reviewSave.add(dto);
 				}
-			} else {
+			} else { // 발행된 글이라면  
 				if (imageList != null) {
 					for (Image i : imageList) {
 						if (r.getId() == i.getReview().getId()) {
@@ -83,10 +78,6 @@ public class UserController {
 							reviewRelease.add(dto);
 							break;
 						}
-						
-						ReviewReadDto dto = ReviewReadDto.fromEntity(r, null, null, null, null);
-						reviewRelease.add(dto);
-						break;
 					}
 				} else {
 					ReviewReadDto dto = ReviewReadDto.fromEntity(r, null, null, null, null);
@@ -97,7 +88,6 @@ public class UserController {
 		
 		Integer releaseSize = reviewRelease.size();
 		Integer saveSize = reviewSave.size();
-		log.info("saveSize = {}", saveSize);
 		model.addAttribute("releaseSize", releaseSize);
 		model.addAttribute("saveSize", saveSize);
 		model.addAttribute("idName", idName);
