@@ -10,7 +10,6 @@
 	.btnCreate {
 		width: 30px;
 		text-align: center;
-		background-color: white;
 		padding: 15px;
 		font-size: 25px;
 		position: fixed;
@@ -26,34 +25,17 @@
 		color: black;
 		text-decoration: none;
 	}
+	
+	img {
+		border-radius: 5px;
+		box-shadow: 5px 5px 10px lightgrey;
+	}
 </style>
 </head>
 
 <div layout:fragment="content">
 
-<div style="width: 93%; text-align: right;">
-	<th:block sec:authorize="isAuthenticated()">
-		<a class="btnCreate" th:href="@{ /review/create }"><i class="bi bi-pencil"></i></a>
-	</th:block>
-	<th:block sec:authorize="isAnonymous()">
-		<a class="btnCreate" onclick="loginAlert()"><i class="bi bi-pencil"></i></a>
-	</th:block>
-</div>
-
-<div style="width:80%; margin:auto;">
-	<div style="margin-bottom: 30px; text-align: center;">
-		<form id="formSearch">
-			<select name="type" style="font-size: 18px; border: none; outline: none; margin-right: 10px;">
-				<option value="r">Review</option>
-				<option value="m">Meeting</option>
-			</select>
-			<span style="display: inline-block; border-bottom: 1px solid black;">
-				<input id="search" name="keyword" type="text" placeholder="Search..." style="border: none; outline: none; font-size: 36px;"/>
-				<button id="btnSearch" style="border: none; background-color: white; font-size: 36px;"><i class="bi bi-search"></i></button>
-			</span>
-		</form>
-	</div>
-	
+<div style="width: 95%; margin:auto;">
 	<div class="sliderDiv"><!-- slide part -->
 		<a href="http://www.cine21.com/news/view/?mag_id=102121" style="padding: none;">
 			<img alt="" src="/image/main1.jpeg" style="width: 100%; object-fit: cover; border: thin solid black;"/>
@@ -70,8 +52,6 @@
 	</div><!-- slide part end -->
 	
 	<div style="margin: 30px 0;"><!-- review block -->
-		<div style="font-weight: bold; font-size: 28px; margin-bottom: 10px; padding-bottom: 10px; border-bottom: thin solid black;">Reviews</div>
-		
 		<div th:if="${#lists.size(reviewAll) <= 6}">
 			<div th:each="reviews : ${ reviewAll }" style="display: inline-block; margin: 10px 12px;">
 				<a th:href="@{ /review/detail?reviewId={reviewId} (reviewId = ${ reviews.reviewId }) }" th:onclick="updateWatchCount([[${reviews.reviewId}]])">
@@ -105,34 +85,34 @@
 		</div>
 		
 		<div th:if="${#lists.size(reviewAll) > 6}">
-			<div th:each="reviews, reviewsState : ${ reviewAll }" style="display: inline-block; margin: 10px 12px;">
-				<div th:if="${reviewsState.index} < 6">
+			<div th:each="reviews, reviewsState : ${ reviewAll }" style="display: inline-block; margin: 10px 48px;">
+				<div th:if="${reviewsState.index} < 6" style="margin: 25px 0;">
 					<a th:href="@{ /review/detail?reviewId={reviewId} (reviewId = ${ reviews.reviewId }) }" th:onclick="updateWatchCount([[${reviews.reviewId}]])">
-						<div th:if="${ reviews.imageId } == null">
-						<div style="width: 350px; height: 250px; margin: 5px 0; border: 1px solid black;"></div>	
+					<div id="title" style="width: 350px; font-weight: bold; font-size: 21px; margin-bottom: 2px; margin-bottom: 8px;" th:text="${ reviews.title }"></div>
+					<div th:text="${ 'by ' + reviews.idName }" style="font-size: small; margin-bottom: 3px;"></div>
+					<div style="font-size: x-small; color:gray; float: right;">
+						<span th:text="${ #temporals.format(reviews.createdTime, 'yyyy/MM/dd') }"></span><i class="bi bi-alarm" style="margin-left: 3px;"></i>
+					</div>
+					<div th:if="${ reviews.imageId } == null">
+						<div style="width: 350px; height: 250px; margin: 10px 0; border: 1px solid black;"></div>	
 					</div>
 					<div th:unless="${ reviews.imageId } == null">
-						<img th:src="|/review/images/${reviews.imageId}|" style="width: 350px; height: 250px; margin: 5px 0; obect-fit: cover;"/>
+						<img th:src="|/review/images/${reviews.imageId}|" style="width: 350px; height: 250px; margin: 10px 0; object-fit: cover;"/>
 					</div>
-						<div id="title" style="width: 350px; font-weight: bold; font-size: 18px; margin-bottom: 2px;" th:text="${ reviews.title }"></div>
-						<div th:text="${ 'by ' + reviews.idName }" style="font-size: small; margin-bottom: 3px;"></div>
-						<div style="font-size: small; color:gray;">
-							<i class="bi bi-alarm" style="margin-right: 3px;"></i><span th:text="${ #temporals.format(reviews.createdTime, 'yyyy/MM/dd') }"></span>
-						</div>
-						<div style="font-size: small; text-align: right;">
-							<span style="margin-right: 5px; color:gray;">
-								<i class="bi bi-eye" style="margin-right: 3px;"></i>
-								<span th:text="${ reviews.watch }"></span>
-							</span>
-							<span style="margin-right: 5px; color:gray;">
-								<i class="bi bi-hearts" style="margin-right: 3px;"></i>
-								<span th:text="${ reviews.heart }"></span>
-							</span>
-							<span style="color:gray;">
-								<i class="bi bi-chat-text" style="margin-right: 3px;"></i>
-								<span th:text="${ reviews.replyCount }"></span>
-							</span>
-						</div>
+					<div style="font-size: small; text-align: center;">
+						<span style="color:gray;">
+							<i class="bi bi-eye" style="margin-right: 3px;"></i>
+							<span th:text="${ reviews.watch }"></span>
+						</span>
+						<span style="margin: 0 21px; color:gray;">
+							<i class="bi bi-hearts" style="margin-right: 3px;"></i>
+							<span th:text="${ reviews.heart }"></span>
+						</span>
+						<span style="color:gray;">
+							<i class="bi bi-chat-text" style="margin-right: 3px;"></i>
+							<span th:text="${ reviews.replyCount }"></span>
+						</span>
+					</div>
 					</a>
 				</div>
 				<div id="displayNone" th:if="${reviewsState.index} >= 6" style="display: none;">
@@ -171,32 +151,13 @@
 			</div>
 		</div>
 	</div>
-	
-	<!-- meeting block
-	<div>
-		<h5>MEETING LIST</h5>
-		<div>
-			<div style="width: 400px; height: 300px; border: 1px solid black;"></div>
-			<div>meeting title</div>
-			<div>writer</div>
-			<div>created time</div>
-			<div>member 5</div>
-			<div>d day</div>
-		</div>
-	</div> -->
-</div><!-- review, meeting part end -->
+</div><!-- review part end -->
 
 </div><!-- FRAGMENT END -->
 
 <th:block layout:fragment="script">
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script th:src="@{ /js/main.js }"></script>
-<script>
-	function loginAlert() {
-		const result = confirm('로그인 후 사용가능합니다. 로그인 페이지로 이동하시겠습니까?');
-		if (result) { window.location.href = '/login'; }
-	}
-</script>
 <script>
 function updateWatchCount(reviewId) {
 	axios.get('/review/watchCount', { params: { reviewId : reviewId } })

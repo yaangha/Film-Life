@@ -3,64 +3,65 @@
 	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 
 <div th:fragment="header">
-
-<style>
-	ul li {
-		list-style: none;
-		display: inline-block;
-		margin: 15px 10px 0 10px;
-	}
-	
-	ul {
-		margin-right: 20px;
-	}
-	
-	#headerUl a {
-		font-weight: bold;
-		color: black;
-		text-decoration: none;
-	}
-	
-	#headerUl a:hover {
-		color: gray;
-	}
-	
-	#header {
-		position: fixed;
-		top: 0;
-	}
-</style>
-
-<div id="header" style="margin:auto; width:100%; height: 70px; background-color: white;  border-bottom: thin solid silver; text-align: right;">
+<div id="header" style="width:100%; height: 70px;">
 	<div>
 		<ul id="headerUl">
+			<li style="font-weight: bold; font-size:x-large;">영화, 기록하다</li>
 			<li><a th:href="@{ /review/main }">Main</a></li>
 			<li><a th:href="@{ /review/main }">Reviews</a></li>
-			<li><a onclick="notYetAlert()" style="color: gray;">Meetings</a></li>
+			<li>
+				<th:block sec:authorize="isAuthenticated()">
+					<a th:href="@{ /review/create }">New <i class="bi bi-pencil" style="font-size: small;"></i></a>
+				</th:block>
+				<th:block sec:authorize="isAnonymous()">
+					<a onclick="loginAlert()">New <i class="bi bi-pencil" style="font-size: small;"></i></a>
+				</th:block>
+			</li>
+			
 			<th:block sec:authorize="isAnonymous()">
-				<li><a th:href="@{ /login }">로그인</a></li>
-				<li><a th:href="@{ /join }">회원가입</a></li>
+				<li class="rightList" style="padding-right: 40px;"><a th:href="@{ /join }">Join</a></li>
+				<li class="rightList"><a th:href="@{ /login }">Login</a></li>
 			</th:block>
 			<th:block sec:authorize="isAuthenticated()">
 				<div id="idName" sec:authentication="principal.idName" style="display: none;"></div>
-				<li style="font-weight: bold;"><span sec:authentication="principal.idName"></span><span>님</span></li>
-				<li><a th:href="@{ /logout }">로그아웃</a></li>
-				<li><a onclick="moveMypage()">마이페이지</a></li>
+				<li class="rightList" style="padding-right: 40px;"><a th:href="@{ /logout }">Logout</a></li>
+				<li class="rightList"><a onclick="moveMypage()"><span sec:authentication="principal.idName"></span>'s Page</a></li>
 			</th:block>
+			<li class="rightList">
+				<form id="formSearch">
+					<select name="type" style="display: none; font-size: 15px; border: none; outline: none; margin-right: 10px;">
+						<option value="r">Review</option>
+					</select>
+					<span style="display: inline-block; border-bottom: 2px solid black;">
+						<input id="search" name="keyword" type="text" placeholder="Search..." style="border: none; outline: none; font-size: 18px;"/>
+						<button id="btnSearch" style="border: none; background-color: white; font-size: 18px;"><i class="bi bi-search"></i></button>
+					</span>
+				</form>
+			</li>
 		</ul>
 	</div>
 </div>
 
 <script>
+	const formSearch = document.querySelector('#formSearch');
+	const btnSearch = document.querySelector('#btnSearch');
+	btnSearch.addEventListener('click', () => {
+		formSearch.action = '/review/search';
+		formSearch.method = 'post';
+		formSearch.submit();
+	})
+	
 	function moveMypage() {
 		const idName = document.querySelector('#idName').innerText;
 		console.log(idName);
 		window.location.href = '/mypage?idName=' + idName;
 	};
-	
-	function notYetAlert() {
-		alert('서비스 준비중입니다 :)');
-	};
+</script>
+<script>
+	function loginAlert() {
+		const result = confirm('로그인 후 사용가능합니다. 로그인 페이지로 이동하시겠습니까?');
+		if (result) { window.location.href = '/login'; }
+	}
 </script>
 </div><!-- fragment end -->
 

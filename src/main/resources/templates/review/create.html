@@ -43,6 +43,23 @@
 			border: thin solid black;
 			padding: 3px;
 		}
+		
+		.imagesList li {
+			list-style: none;
+			display: inline-block;
+			margin-right: 10px;
+		}
+		
+		.btnDelete {
+			background-color: white;
+			border: none;
+			width: 18px;
+		}
+		
+		#btnImage {
+			border: none;
+			font-size: 36px;
+		}
 	</style>
 </head>
 
@@ -56,15 +73,15 @@
 					<textarea id="title" name="title" style="width: 100%; border: none; font-size: 30px; height: 30px; resize: none;" placeholder="제목을 입력하세요"></textarea>
 				</div>
 				<div style="width:70%; margin: auto;">
-					<textarea id="content" name="content" style="width: 100%; height:500px; font-size: 15px; border: none; resize: none; margin-top: 15px; line-height: 1.5em;" placeholder="내용을 입력하세요(img)"></textarea>
+					<textarea id="content" name="content" style="width: 100%; height:500px; font-size: 15px; border: none; resize: none; margin-top: 15px; line-height: 1.5em;" placeholder="내용을 입력하세요!"></textarea>
+					<div id="images" style="width:70%; text-align: left; margin: auto;"></div>
+					<ul class="imagesList">
+					</ul>
 				</div>
 				<div style="width:70%; text-align: left; margin: auto; padding: 15px 0;">
-				<label for="image">사진선택</label>
+				<label id="btnImage" for="image"><i class="bi bi-folder-plus"></i></label>
 				<input id="image" type="file" multiple="multiple" onchange="setThumbnail(this)" name="files" style="display: none;"/>
 				</div>
-				<div id="images" style="width:70%; text-align: left; margin: auto;"></div>
-				<ul class="imagesList">
-				</ul>
 				<div style="width:70%; text-align: left; margin: auto;">
 					<span class="star">
 						★★★★★
@@ -90,19 +107,6 @@
 			document.querySelector(`.star span`).style.width = `${target.value * 20}%`;
 		}
 	</script>
-	<!-- <script>
-	function setThumbnail(event) {
-		var reader = new FileReader();
-		reader.onload = function(event) {
-			var img = document.createElement("img");
-			img.setAttribute("src", event.target.result);
-			document.querySelector("div#images").appendChild(img);
-			img.style.width = "500px";
-			
-		};
-		reader.readAsDataURL(event.target.files[0]);
-	}	
-	</script> -->
 	<script> // image 레이아웃 수정 필요       
 	function setThumbnail(event) {
 		for (let i = 0; i < event.files.length; i++) {
@@ -112,9 +116,12 @@
 				
 				let node = document.createElement('li');
 				let tmp = `
-				<li><img src="" style="width: 500px;">
-					${fullname}
-					<input type="button" class="btnDelete" value="DELETE"/>
+				<li>
+					<div style="width:250px; text-align: right; font-size: small;">
+						${fullname}
+						<button class="btnDelete"><i class="bi bi-x-circle"></i></button>
+					</div>
+					<img src="" style="width: 250px; height: 150px; object-fit: cover;">
 				</li>
 				`
 				
