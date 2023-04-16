@@ -17,14 +17,14 @@ window.addEventListener('DOMContentLoaded', () => {
 			const divReplies = document.querySelector('#replies');
 			let str = '';
 			for (let r of data) {
-				str += '<div style="border-top: thin solid silver; padding: 20px 10px;">'
-					+ '<div style="font-size: small; color: gray; margin-bottom: 5px;">'
+				str += '<div style="border-top: thin solid silver; padding: 30px 10px;">'
+					+ '<div style="font-size: x-small; color: gray; margin-bottom: 5px;">'
 					+ '<span>' + r.writer + '</span>'
 					+ '</div>'
-					+ `<input class="replyInputs" style="font-size: 17px; outline: none; border: none;" value="${r.replyText}" readonly>`
+					+ `<input class="replyInputs" style="width: 90%; font-size: 15px; outline: none; border: none;" value="${r.replyText}" readonly>`
 				if (r.writer == loginUser) {
-					str += `<button class="btnModifies" data-rid="${r.replyId}">MODIFY</button>`
-						+ `<button class="btnDeletes" data-rid="${r.replyId}">DELETE</button>`
+					str += `<button style="float: right;" class="btnDeletes" data-rid="${r.replyId}">삭제</button>`
+						+ `<button style="float: right;" class="btnModifies" data-rid="${r.replyId}">수정</button>`
 				}
 				str += '</div>'
 			}

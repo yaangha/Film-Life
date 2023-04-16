@@ -71,6 +71,15 @@
 			background-color: white;
 			font-size: 25px;
 		}
+		
+		.btnDeletes, .btnModifies {
+			background-color: white;
+			border: thin solid silver;
+			padding: 5px;
+			margin: 3px;
+			color: gray;
+			border-radius: 3px;			
+		}
 	</style>
 </head>	
 
@@ -162,28 +171,28 @@
 				<div th:each="reviews, reviewsState : ${ otherReview }" style="display: inline-block; margin: 10px 12px;">
 				<div th:if="${ reviewsState.index } < 3">
 					<a th:href="@{ /review/detail?reviewId={reviewId} (reviewId = ${ reviews.reviewId }) }"  th:onclick="updateWatchCount([[${reviews.reviewId}]])">
-						<div th:if="${ reviews.imageId } == null">
-							<div style="width: 350px; height: 250px; margin: 5px 0; border: 1px solid black;"></div>	
-						</div>
-						<div th:unless="${ reviews.imageId } == null">
-							<img th:src="|/review/images/${reviews.imageId}|" style="width: 350px; height: 250px; margin: 5px 0; object-fit: cover;"/>
-						</div>
-						<div id="title" style="width: 350px; font-weight: bold; font-size: 18px;" th:text="${ reviews.title }"></div>
-						<div th:text="${ 'by ' + reviews.idName }" style="font-size: small; margin-bottom: 3px;"></div>
-						<div style="font-size: small; color:gray;">
+					<div id="title" style="width: 350px; font-weight: bold; font-size: 21px; margin-bottom: 2px; margin-bottom: 8px;" th:text="${ reviews.title }"></div>
+					<div th:text="${ 'by ' + reviews.idName }" style="font-size: small; margin-bottom: 3px;"></div>
+					<div style="font-size: x-small; color:gray; float: right;">
 							<i class="bi bi-alarm" style="margin-right: 3px;"></i><span th:text="${ #temporals.format(reviews.createdTime, 'yyyy/MM/dd') }"></span>
 						</div>
-						<div style="font-size: small;">
-							<span style="margin-right: 10px; color:gray;">
-								<i class="bi bi-eye" style="padding-right: 3px;"></i>
+						<div th:if="${ reviews.imageId } == null">
+							<div style="width: 350px; height: 250px; margin: 10px 0; border: 1px solid black;"></div>	
+						</div>
+						<div th:unless="${ reviews.imageId } == null">
+							<img th:src="|/review/images/${reviews.imageId}|" style="width: 350px; height: 250px; margin: 10px 0; object-fit: cover;"/>
+						</div>
+						<div style="font-size: small; text-align: center;">
+							<span style="color:gray;">
+								<i class="bi bi-eye" style="margin-right: 3px;"></i>
 								<span th:text="${ reviews.watch }"></span>
 							</span>
-							<span style="margin-right: 10px; color:gray;">
-								<i class="bi bi-hearts" style="padding-right: 3px;"></i>
+							<span style="margin: 0 21px; color:gray;">
+								<i class="bi bi-hearts" style="margin-right: 3px;"></i>
 								<span th:text="${ reviews.heart }"></span>
 							</span>
-							<span style="margin-right: 10px; color:gray;">
-								<i class="bi bi-chat-text" style="padding-right: 3px;"></i>
+							<span style="color:gray;">
+								<i class="bi bi-chat-text" style="margin-right: 3px;"></i>
 								<span th:text="${ reviews.replyCount }"></span>
 							</span>
 						</div>
