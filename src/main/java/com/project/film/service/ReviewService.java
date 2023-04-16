@@ -66,17 +66,8 @@ public class ReviewService {
 		List<ReviewReadDto> list = new ArrayList<>();
 		for (Review r : listAll) {
 			if (r.getStorage() == 1) {
-				Integer[] score = countScore(r.getId());
-				
-				List<Reply> reply = replyRepository.findByReviewIdOrderByIdDesc(r.getId());
-				Integer countReply = reply.size();
-				
-				List<Image> image = imageRepository.findByReviewId(r.getId());
-				log.info("review controller image list = {}", image);
-				Long imageId = (image.size() == 0)? null : image.get(0).getId();
-				
-				log.info("review controller image path?? = {}", imageId);
-				list.add(ReviewReadDto.fromEntity(r, score[0], score[1], countReply, imageId));
+				ReviewReadDto dto = addData(r);
+				list.add(dto);
 			}
 		}
 		return list;
@@ -119,12 +110,7 @@ public class ReviewService {
 			List<Review> reviews = reviewRepository.findByAuthorIgnoreCaseContainingOrTitleIgnoreCaseContainingOrContentIgnoreCaseContainingOrderByIdDesc(keyword, keyword, keyword);
 			for (Review r : reviews) {
 				if (r.getStorage() == 1) {
-					Integer[] score = countScore(r.getId());
-					
-					List<Reply> reply = replyRepository.findByReviewIdOrderByIdDesc(r.getId());
-					List<Image> image = imageRepository.findByReviewId(r.getId());
-
-					ReviewReadDto dto = ReviewReadDto.fromEntity(r, score[0], score[1], reply.size(), image.get(0).getId());
+					ReviewReadDto dto = addData(r);
 					list.add(dto);
 				}
 			}
@@ -290,6 +276,49 @@ public class ReviewService {
 		score[1] = watch;
 		
 		return score;
+	}
+	
+	/**
+	 * 디테일 페이지에서 다른 리뷰들 보여줄 때 사용  
+	 * @param reviewId 제외할 리뷰 아이디  
+	 * @return 보여줄 리뷰들 리스트 
+	 */
+	public List<ReviewReadDto> readOtherReviews(Integer reviewId) {
+		log.info("ReviewService otherReviews reviewId = {}", reviewId);
+		List<Review> otherReviews = reviewRepository.findOtherReviews(reviewId);
+		log.info("ReviewService otherReviews size={}", otherReviews.size());
+		
+		List<ReviewReadDto> list = new ArrayList<>();
+		if (otherReviews.size() > 6) {
+			for (int i = 0; i < 6; i++) {
+				if (otherReviews.get(i).getStorage() == 1) {
+					ReviewReadDto dto = addData(otherReviews.get(i));
+					list.add(dto);
+				}
+			}
+		} else {
+			for (Review r : otherReviews) {
+				if (r.getStorage() == 1) {
+					ReviewReadDto dto = addData(r);
+					list.add(dto);				
+				}
+			}
+		}
+		return list;
+	}
+	
+	private ReviewReadDto addData(Review review) {
+		Integer[] score = countScore(review.getId());
+		
+		List<Reply> reply = replyRepository.findByReviewIdOrderByIdDesc(review.getId());
+		Integer countReply = reply.size();
+		
+		List<Image> image = imageRepository.findByReviewId(review.getId());
+		Long imageId = (image.size() == 0)? null : image.get(0).getId();
+		
+		ReviewReadDto dto = ReviewReadDto.fromEntity(review, score[0], score[1], countReply, imageId);
+		
+		return dto;
 	}
 
 }
