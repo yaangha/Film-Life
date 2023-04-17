@@ -80,6 +80,10 @@
 			color: gray;
 			border-radius: 3px;			
 		}
+		
+		.images {
+			box-shadow: 5px 5px 10px lightgray;
+		}
 	</style>
 </head>	
 
@@ -89,7 +93,6 @@
 		<form id="formDelete">
 			<input type="hidden" id="reviewId" name="reviewId" th:value="${ review.id }"/>
 		</form>
-		<div style="font-weight: bold;">Reviews</div>
 		<div style="border-bottom: thin solid silver; padding-bottom: 10px; margin-bottom: 5px;">
 			<div>
 				<div th:text="${ review.title }" style="width: 93%; font-size: 30px; font-weight:bolder; margin: 8px 0; display: inline-block;"></div>
@@ -116,26 +119,26 @@
 				<div th:text="${ 'by ' + review.author }" style="display: inline-block;"></div>
 				<div style="display: inline-block;"><i class="bi bi-alarm" style="margin: 0 3px;"></i><span th:text="${ #temporals.format(review.createdTime, 'yyyy/MM/dd hh:mm') }"></span></div>
 			</div>
-			<div style="margin-bottom: 10px;">
-				<span class="star">
-					★★★★★
-					<span id="colorStar">★★★★★</span>
-					<input id="score" name="score" type="range" th:value="${ review.score }" step="1" min="0" max="5"/>
-				</span>
-			</div>
 		</div>
 		<div style="color: gray; font-size: small; text-align: right;">
 			<span style="margin-right: 3px; color:gray;"><i class="bi bi-eye" style="padding-right: 3px;"></i><span th:text="${ reviewDto.watch }"></span></span>
 			<span style="margin-right: 3px; color:gray;"><i class="bi bi-hearts" style="padding-right: 3px;"></i><span id="countHeart" th:text="${ reviewDto.heart }"></span></span>
 		</div>
-		
-		<div th:unless="${ reviewDto.imageId } == null">
-			<div th:each="image : ${ images }" style="margin: 10px 0; display: inline-block;">
-				<img th:src="|/review/images/${image.id}|" style="width: 350px; height: 250px; object-fit: cover;"/>
-			</div>
+		<div style="margin-bottom: 10px;">
+			<span class="star">
+				★★★★★
+				<span id="colorStar">★★★★★</span>
+				<input id="score" name="score" type="range" th:value="${ review.score }" step="1" min="0" max="5"/>
+			</span>
 		</div>
 		
 		<div th:text="${ review.content }" style="padding-bottom: 50px; font-size: 15px; white-space: pre-wrap; line-height: 1.5em;"></div>
+		
+		<div th:unless="${ reviewDto.imageId } == null">
+			<div th:each="image : ${ images }" style="margin: 10px 0; display: inline-block;">
+				<img class="images" th:src="|/review/images/${image.id}|" style="width: 350px; height: 250px; object-fit: cover;"/>
+			</div>
+		</div>
 		
 		<th:block sec:authorize="isAuthenticated()">
 		<div style="text-align: right;">
@@ -146,27 +149,27 @@
 		</div>
 		</th:block>
 		
-		<div style="font-size: 18px; font-weight: bold; margin: 10px 0;">댓글 <span id="countReply" style="color: green;" th:text="${ reviewDto.replyCount }"></span></div>
-		<div id="replies"></div>
-		
-		<th:block sec:authorize="isAuthenticated()">
-		<div>
-			<input type="hidden" id="writer" th:value="${ #authentication.principal.idName }"/>
-			<div style="border: 1px solid silver; border-radius: 10px;">
-				<input id="replyText" type="text" style="width: 93%; height: 25px; font-size: 15px; border: none; padding: 10px; outline: none;" placeholder="댓글을 입력해주세요 :)"/>
-				<button id="btnReply" style="border: thin solid silver; background-color: white; padding: 8px; border: none; color:gray;">Click</button>
+		<div style="margin: 70px 0;">
+			<div style="font-size: 18px; font-weight: bold; margin: 20px 0;">댓글 <span id="countReply" style="color: green;" th:text="${ reviewDto.replyCount }"></span></div>
+			<div id="replies"></div>
+			<th:block sec:authorize="isAuthenticated()">
+			<div>
+				<input type="hidden" id="writer" th:value="${ #authentication.principal.idName }"/>
+				<div style="border: 1px solid silver; border-radius: 10px;">
+					<input id="replyText" type="text" style="width: 93%; height: 25px; font-size: 15px; border: none; padding: 10px; outline: none;" placeholder="댓글을 입력해주세요 :)"/>
+					<button id="btnReply" style="border: thin solid silver; background-color: white; padding: 8px; border: none; color:gray;">Click</button>
+				</div>
 			</div>
+			</th:block>
+			<th:block sec:authorize="isAnonymous()">
+				<div style="border: thin solid silver;">
+					<input type="text" style="width: 93%; height: 25px; font-size: 15px; border: none; padding: 10px; outline: none;" placeholder="로그인 후 사용가능합니다 :)" readonly/>
+					<button style="border: thin solid silver; background-color: white; padding: 8px; border-radius: 15px; color:gray;">Click</button>
+				</div>
+			</th:block>
 		</div>
-		</th:block>
-		<th:block sec:authorize="isAnonymous()">
-			<div style="border: thin solid silver;">
-				<input type="text" style="width: 93%; height: 25px; font-size: 15px; border: none; padding: 10px; outline: none;" placeholder="로그인 후 사용가능합니다 :)" readonly/>
-				<button style="border: thin solid silver; background-color: white; padding: 8px; border-radius: 15px; color:gray;">Click</button>
-			</div>
-		</th:block>
-		
 		<div style="margin: 50px 0;">
-			<div th:each="reviews : ${ otherReviews }" style="display: inline-block; margin: 10px 12px;">
+			<div th:each="reviews : ${ otherReviews }" style="display: inline-block; margin: 30px 12px;">
 				<a th:href="@{ /review/detail?reviewId={reviewId} (reviewId = ${ reviews.reviewId }) }"  th:onclick="updateWatchCount([[${reviews.reviewId}]])">
 				<div id="title" style="width: 350px; font-weight: bold; font-size: 21px; margin-bottom: 2px; margin-bottom: 8px;" th:text="${ reviews.title }"></div>
 				<div th:text="${ 'by ' + reviews.idName }" style="font-size: small; margin-bottom: 3px;"></div>
@@ -174,10 +177,10 @@
 						<i class="bi bi-alarm" style="margin-right: 3px;"></i><span th:text="${ #temporals.format(reviews.createdTime, 'yyyy/MM/dd') }"></span>
 					</div>
 					<div th:if="${ reviews.imageId } == null">
-						<div style="width: 350px; height: 250px; margin: 10px 0; border: 1px solid black;"></div>	
+						<div class="images" style="width: 350px; height: 250px; margin: 10px 0; border: 1px solid black;"></div>	
 					</div>
 					<div th:unless="${ reviews.imageId } == null">
-						<img th:src="|/review/images/${reviews.imageId}|" style="width: 350px; height: 250px; margin: 10px 0; object-fit: cover;"/>
+						<img class="images" th:src="|/review/images/${reviews.imageId}|" style="width: 350px; height: 250px; margin: 10px 0; object-fit: cover;"/>
 					</div>
 					<div style="font-size: small; text-align: center;">
 						<span style="color:gray;">

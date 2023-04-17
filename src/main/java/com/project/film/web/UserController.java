@@ -16,6 +16,7 @@ import com.project.film.domain.Review;
 import com.project.film.domain.Users;
 import com.project.film.dto.ReviewReadDto;
 import com.project.film.dto.UserJoinDto;
+import com.project.film.repository.ImageRepository;
 import com.project.film.service.ImageService;
 import com.project.film.service.ReviewService;
 import com.project.film.service.UsersService;
@@ -57,31 +58,19 @@ public class UserController {
 		List<ReviewReadDto> reviewSave = new ArrayList<>();
 		
 		for (Review r : reviewAll) {
-			if (r.getStorage() == 0) { // 저장된 글이라면  
-				if (imageList != null) {
-					for (Image i : imageList) {
-						if (r.getId() == i.getReview().getId()) {
-							ReviewReadDto dto = ReviewReadDto.fromEntity(r, null, null, null, i.getId());
-							reviewSave.add(dto);
-							break;
-						}
+			if (r.getStorage() == 0) {
+				ReviewReadDto dto = ReviewReadDto.fromEntity(r, null, null, null, null);
+				reviewSave.add(dto);
+			} else {
+				for (Image i : imageList) {
+					List<Image> image = imageService.readByReviewId(r.getId());
+					if (image != null) {
+						ReviewReadDto dto = ReviewReadDto.fromEntity(r, null, null, null, i.getId());
+						reviewRelease.add(dto);
+					} else {
+						ReviewReadDto dto = ReviewReadDto.fromEntity(r, null, null, null, i.getId());
+						reviewRelease.add(dto);
 					}
-				} else {
-					ReviewReadDto dto = ReviewReadDto.fromEntity(r, null, null, null, null);
-					reviewSave.add(dto);
-				}
-			} else { // 발행된 글이라면  
-				if (imageList != null) {
-					for (Image i : imageList) {
-						if (r.getId() == i.getReview().getId()) {
-							ReviewReadDto dto = ReviewReadDto.fromEntity(r, null, null, null, i.getId());
-							reviewRelease.add(dto);
-							break;
-						}
-					}
-				} else {
-					ReviewReadDto dto = ReviewReadDto.fromEntity(r, null, null, null, null);
-					reviewRelease.add(dto);
 				}
 			}
 		}
