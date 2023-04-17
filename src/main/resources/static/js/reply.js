@@ -4,6 +4,10 @@
 window.addEventListener('DOMContentLoaded', () => {
 	readAllReplies(); // 모든 댓글 출력
 	
+	const writer = document.querySelector('#writer');
+	
+	
+	
 	function readAllReplies() {
 		const reviewId = document.querySelector('#reviewId').value;
 		
@@ -22,7 +26,7 @@ window.addEventListener('DOMContentLoaded', () => {
 					+ '<span>' + r.writer + '</span>'
 					+ '</div>'
 					+ `<input class="replyInputs" style="width: 90%; font-size: 15px; outline: none; border: none;" value="${r.replyText}" readonly>`
-				if (r.writer == loginUser) {
+				if (r.writer == writer.value) {
 					str += `<button style="float: right;" class="btnDeletes" data-rid="${r.replyId}">삭제</button>`
 						+ `<button style="float: right;" class="btnModifies" data-rid="${r.replyId}">수정</button>`
 				}

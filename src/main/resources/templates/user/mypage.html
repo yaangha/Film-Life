@@ -27,21 +27,8 @@
 
 <div layout:fragment="content">
 
-<div style="width: 80%; margin: auto;">
+<div style="width: 80%; margin: auto; padding-top: 50px;">
 	
-	<div>
-		<div style="margin-bottom: 10px; font-size: 25px;" >
-			<i class="bi bi-house-fill"></i>
-			<span th:text="${ idName }"></span>
-			<input id="idName" th:value="${ idName }" style="display:none;"/>
-		</div>
-		<div style="font-size: small;">
-			<a onclick="deleteUser()">
-				<i class="bi bi-arrow-right"></i>
-				<span>탈퇴하기</span>
-			</a>
-		</div>
-	</div>
 	<div style="width:100%; margin-bottom: 15px;">
 		<button id="btnChangeRelease" style="width: 49%; display: inline-block; padding: 15px 0; text-align: center; font-size: 27px; border:none; background-color:white; border-bottom: thin solid black;">발행한 글 <span th:text="${ releaseSize }"></span></button>
 		<button id="btnChangeSave" style="width: 49%; display: inline-block; padding: 15px 0; text-align: center; font-size: 27px; border:none; background-color:white; border-bottom: thin solid silver; color: silver;">저장된 글 <span th:text="${ saveSize }"></span></button>
@@ -80,34 +67,18 @@
 		</div>
 	</div>
 	
+	<div style="font-size: small; margin: 30px 0;">
+		<input id="idName" th:value="${ idName }" style="display:none;"/>
+		<a onclick="deleteUser()">
+			<i class="bi bi-arrow-right"></i><span> 탈퇴하기</span>
+		</a>
+	</div>
 </div>
 </div>
 
 <th:block layout:fragment="script">
-	<script>
-		const btnChangeRelease = document.querySelector('#btnChangeRelease');
-		const btnChangeSave = document.querySelector('#btnChangeSave');
-		
-		btnChangeRelease.addEventListener('click', () => {
-			document.querySelector('#releaseList').style.display = '';	
-			document.querySelector('#saveList').style.display = 'none';	
-			document.querySelector('#btnChangeSave').style.color = 'silver';
-			document.querySelector('#btnChangeRelease').style.color = 'black';		
-			document.querySelector('#btnChangeRelease').style.borderBottom = 'thin solid black';	
-			document.querySelector('#btnChangeSave').style.borderBottom = 'thin solid silver';		
-
-		})
-		
-		btnChangeSave.addEventListener('click', () => {
-			document.querySelector('#saveList').style.display = '';
-			document.querySelector('#releaseList').style.display = 'none';
-			document.querySelector('#btnChangeSave').style.color = 'black';
-			document.querySelector('#btnChangeRelease').style.color = 'silver';
-			document.querySelector('#btnChangeSave').style.borderBottom = 'thin solid black';	
-			document.querySelector('#btnChangeRelease').style.borderBottom = 'thin solid silver';	
-
-		})
-	</script>
+	<script th:src="@{ /js/mypage.js }"></script>
+	
 	<script>
 		function deleteUser() {
 			const result = confirm('정말 탈퇴하시겠습니까? 탈퇴하시면 작성된 글들은 모두 삭제됩니다.');

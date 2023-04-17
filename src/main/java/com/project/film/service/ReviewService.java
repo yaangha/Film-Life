@@ -250,17 +250,6 @@ public class ReviewService {
 		return result;
 	}
 	
-	// 중복되는 코드는 메서드 만들어서 사용
-	public Integer totalHeart(Integer reviewId) {
-		Integer result = 0;
-		List<ReviewScore> list = reviewScoreRepository.findByReviewId(reviewId);
-		for (ReviewScore rs : list) {
-			result += rs.getHeart();
-		}
-		
-		return result;
-	}
-	
 	public Integer[] countScore(Integer reviewId) {
 		Integer[] score = new Integer[2];
 		
@@ -305,6 +294,17 @@ public class ReviewService {
 			}
 		}
 		return list;
+	}
+
+	// 중복되는 코드는 메서드 만들어서 사용
+	public Integer totalHeart(Integer reviewId) {
+		Integer result = 0;
+		List<ReviewScore> list = reviewScoreRepository.findByReviewId(reviewId);
+		for (ReviewScore rs : list) {
+			result += rs.getHeart();
+		}
+		
+		return result;
 	}
 	
 	private ReviewReadDto addData(Review review) {
