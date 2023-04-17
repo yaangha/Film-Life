@@ -48,7 +48,7 @@ public class ReviewController {
 	@ResponseBody
 	@GetMapping("/images/{imageId}")
 	public Resource showImage(@PathVariable("imageId") Long imageId, Model model) throws IOException {
-		 Image image = imageRepository.findById(imageId).get();
+		Image image = imageRepository.findById(imageId).get();
 	    return new UrlResource("file:" + image.getFilePath());
 	}
 	

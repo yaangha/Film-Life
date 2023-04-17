@@ -83,6 +83,15 @@
 		
 		.images {
 			box-shadow: 5px 5px 10px lightgray;
+			border-radius: 5px;
+			width: 350px; 
+			height: 250px; 
+			margin: 10px 0;
+		}
+		
+		.hearts {
+			margin-right: 3px; 
+			color:gray;
 		}
 	</style>
 </head>	
@@ -121,8 +130,8 @@
 			</div>
 		</div>
 		<div style="color: gray; font-size: small; text-align: right;">
-			<span style="margin-right: 3px; color:gray;"><i class="bi bi-eye" style="padding-right: 3px;"></i><span th:text="${ reviewDto.watch }"></span></span>
-			<span style="margin-right: 3px; color:gray;"><i class="bi bi-hearts" style="padding-right: 3px;"></i><span id="countHeart" th:text="${ reviewDto.heart }"></span></span>
+			<span class="hearts"><i class="bi bi-eye" style="padding-right: 3px;"></i><span th:text="${ reviewDto.watch }"></span></span>
+			<span class="hearts"><i class="bi bi-hearts" style="padding-right: 3px;"></i><span id="countHeart" th:text="${ reviewDto.heart }"></span></span>
 		</div>
 		<div style="margin-bottom: 10px;">
 			<span class="star">
@@ -136,7 +145,7 @@
 		
 		<div th:unless="${ reviewDto.imageId } == null">
 			<div th:each="image : ${ images }" style="margin: 10px 0; display: inline-block;">
-				<img class="images" th:src="|/review/images/${image.id}|" style="width: 350px; height: 250px; object-fit: cover;"/>
+				<img class="images" th:src="|/review/images/${image.id}|" style="object-fit: cover;"/>
 			</div>
 		</div>
 		
@@ -177,10 +186,10 @@
 						<i class="bi bi-alarm" style="margin-right: 3px;"></i><span th:text="${ #temporals.format(reviews.createdTime, 'yyyy/MM/dd') }"></span>
 					</div>
 					<div th:if="${ reviews.imageId } == null">
-						<div class="images" style="width: 350px; height: 250px; margin: 10px 0; border: 1px solid black;"></div>	
+						<div class="images" style="border: 1px solid black;"></div>	
 					</div>
 					<div th:unless="${ reviews.imageId } == null">
-						<img class="images" th:src="|/review/images/${reviews.imageId}|" style="width: 350px; height: 250px; margin: 10px 0; object-fit: cover;"/>
+						<img class="images" th:src="|/review/images/${reviews.imageId}|" style="object-fit: cover;"/>
 					</div>
 					<div style="font-size: small; text-align: center;">
 						<span style="color:gray;">

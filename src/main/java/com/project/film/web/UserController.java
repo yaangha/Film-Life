@@ -54,6 +54,7 @@ public class UserController {
 	public String mypage(String idName, Model model) {
 		List<Review> reviewAll = reviewService.readUser(idName);
 		List<Image> imageList = imageService.readImg(idName);
+		log.info("imageList size ={}", imageList.size());
 		List<ReviewReadDto> reviewRelease = new ArrayList<>();
 		List<ReviewReadDto> reviewSave = new ArrayList<>();
 		
@@ -63,12 +64,14 @@ public class UserController {
 				reviewSave.add(dto);
 			} else {
 				for (Image i : imageList) {
-					List<Image> image = imageService.readByReviewId(r.getId());
-					if (image != null) {
-						ReviewReadDto dto = ReviewReadDto.fromEntity(r, null, null, null, i.getId());
-						reviewRelease.add(dto);
+					if (i != null) {
+						if (r.getId() == i.getReview().getId()) {
+							ReviewReadDto dto = ReviewReadDto.fromEntity(r, null, null, null, i.getId());
+							reviewRelease.add(dto);
+							break;
+						}
 					} else {
-						ReviewReadDto dto = ReviewReadDto.fromEntity(r, null, null, null, i.getId());
+						ReviewReadDto dto = ReviewReadDto.fromEntity(r, null, null, null, null);
 						reviewRelease.add(dto);
 					}
 				}
