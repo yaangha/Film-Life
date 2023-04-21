@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{ layout/basic-layout }">
+
+<head>
+<style>
+	textarea:focus {
+		outline: none;
+	}
+	
+	.star {
+		position: relative;
+		font-size: 32px;
+		color: #ddd;
+	}
+	
+	.star input {
+		width: 100%;
+		height: 100%;
+		position: absolute;
+		left: 0;
+		opacity: 0;
+		display: inline-block;
+	}
+	
+	.star span {
+		width: 0;
+		position: absolute;
+		left: 0;
+		color: yellow;
+		overflow: hidden;
+		pointer-events: none;
+	}
+	
+	.btnDelete {
+		background-color: white;
+		border: none;
+		width: 18px;
+	}
+	
+	#btnModify {
+		width: 100px;
+		height: 35px;
+	}
+</style>
+</head>
+
+<div layout:fragment="content">
+	
+	<div style="width:100%; margin: auto;"><!-- main content -->
+		<div>
+			<form id="formModify">
+				<input id="author" name="author" type="hidden" th:value="${ #authentication.name }" />
+				<input id="reviewId" name="reviewId" type="hidden" th:value="${ review.id }"/>
+				<div style="width:70%; border-bottom: thin solid silver; margin: auto;">
+					<textarea id="title" name="title" th:text="${ review.title }" style="width: 100%; border: none; font-size: 30px; height: 30px; resize: none;" placeholder="제목을 입력하세요" required autofocus></textarea>
+				</div>
+				<div style="width:70%; margin: auto;">
+					<textarea id="content" name="content" th:text="${ review.content }" style="width: 100%; height: 300px; padding-bottom: 50px; font-size: 15px; border: none; resize: none; margin-top: 15px; line-height: 1.5em;" placeholder="내용을 입력하세요(img)" required></textarea>
+				</div>
+				<div style="width: 70%; margin: auto;" id="imageList" th:each="image : ${imageList}">
+					<div style="display: inline-block;">
+						<img th:src="|/review/images/${image.id}|" style="width: 250px; height:150px; object-fit: cover;"/>
+						<button class="btnDelete"><i class="bi bi-x-circle"></i></button>
+					</div>
+				</div>
+				<div style="width:70%; text-align: left; margin: auto;">
+					<span class="star">
+						★★★★★
+						<span id="colorStar">★★★★★</span>
+						<input id="score" name="score" type="range" oninput="drawStar(this)" th:value="${ review.score }" step="1" min="0" max="5"/>
+					</span>
+				</div>
+			</form>
+			<div style="width:70%; margin: auto; text-align: right;">
+				<button id="btnModify" style="background-color: black; border: none; color: white; border-radius: 12px;">수정</button>
+			</div>
+		</div>
+		
+	</div><!-- main content end -->
+</div><!-- fragment end -->
+
+<th:block layout:fragment="script">
+	<script>
+	const formModify = document.querySelector('#formModify');
+	const btnModify = document.querySelector('#btnModify');
+	
+	const title = document.querySelector('#title');
+	const content = document.querySelector('#content');
+	const score = document.querySelector('#score').value;
+	
+	btnModify.addEventListener('click', function () {
+		
+		if (title.value == '' || content.value == '' || score == '') {
+			alert('제목과 내용, 별점을 모두 채워주세요!');
+			return;
+		}
+		formModify.action = '/review/modify';
+		formModify.method = 'post';
+		formModify.submit();
+	})
+	</script> 
+	<script>
+		document.querySelector('#colorStar').style.width = `${score * 20}%`;
+		
+		const drawStar = (target) => {
+			document.querySelector(`.star span`).style.width = `${target.value * 20}%`;
+		}
+	</script>
+	<script>
+	const imageList = document.querySelector('#imageList');
+	for(let i = 0; i < imageList.length; i++) {
+		console.log(i);
+	}
+	</script>
+</th:block>
+
+</html>

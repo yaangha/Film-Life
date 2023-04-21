@@ -1,0 +1,17 @@
+{"properties": [
+  {
+    "name": "file.imageDir",
+    "type": "java.lang.String",
+    "description": "A description for 'file.imageDir'"
+  },
+  {
+    "name": "file.imageDir",
+    "type": "java.lang.String",
+    "description": "A description for 'file.imageDir'"
+  },
+  {
+    "name": "file.imageDir",
+    "type": "java.lang.String",
+    "description": "A description for 'file.imageDir'"
+  }
+]}

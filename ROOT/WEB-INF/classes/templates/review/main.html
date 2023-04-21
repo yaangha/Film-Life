@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{ layout/basic-layout }">
+
+<head>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+<style>
+	.btnCreate {
+		width: 30px;
+		text-align: center;
+		padding: 15px;
+		font-size: 25px;
+		position: fixed;
+	}
+	
+	#title {
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+	
+	a {
+		color: black;
+		text-decoration: none;
+	}
+	
+	img {
+		border-radius: 5px;
+		box-shadow: 5px 5px 10px lightgrey;
+	}
+</style>
+</head>
+
+<div layout:fragment="content">
+
+<div style="width: 95%; margin:auto;">
+	<div style="display: none;" class="sliderDiv"><!-- slide part -->
+		<a href="http://www.cine21.com/news/view/?mag_id=102121" style="padding: none;">
+			<img alt="" src="/image/main1.jpeg" style="width: 100%; object-fit: cover; border: thin solid black;"/>
+		</a>
+	</div><!-- slide part end -->
+	
+	<div style="margin: 30px 0;"><!-- review block -->
+		<div th:if="${#lists.size(reviewAll) <= 6}">
+			<div th:each="reviews : ${ reviewAll }" style="display: inline-block; margin: 10px 48px;">
+				<a th:href="@{ /review/detail?reviewId={reviewId} (reviewId = ${ reviews.reviewId }) }" th:onclick="updateWatchCount([[${reviews.reviewId}]])">
+					<div id="title" style="width: 350px; font-weight: bold; font-size: 21px; margin-bottom: 2px; margin-bottom: 8px;" th:text="${ reviews.title }"></div>
+					<div th:text="${ 'by ' + reviews.idName }" style="font-size: small; margin-bottom: 3px;"></div>
+					<div style="font-size: x-small; color:gray; float: right;">
+						<span th:text="${ #temporals.format(reviews.createdTime, 'yyyy/MM/dd') }"></span><i class="bi bi-alarm" style="margin-left: 3px;"></i>
+					</div>
+					<div th:if="${ reviews.imageId } == null">
+						<div style="width: 350px; height: 250px; margin: 10px 0; border: 1px solid black;"></div>	
+					</div>
+					<div th:unless="${ reviews.imageId } == null">
+						<img th:src="|/review/images/${reviews.imageId}|" style="width: 350px; height: 250px; margin: 10px 0; object-fit: cover;"/>
+					</div>
+					<div style="font-size: small; text-align: center;">
+						<span style="color:gray;">
+							<i class="bi bi-eye" style="margin-right: 3px;"></i>
+							<span th:text="${ reviews.watch }"></span>
+						</span>
+						<span style="margin: 0 21px; color:gray;">
+							<i class="bi bi-hearts" style="margin-right: 3px;"></i>
+							<span th:text="${ reviews.heart }"></span>
+						</span>
+						<span style="color:gray;">
+							<i class="bi bi-chat-text" style="margin-right: 3px;"></i>
+							<span th:text="${ reviews.replyCount }"></span>
+						</span>
+					</div>
+				</a>
+			</div>
+		</div>
+		
+		<div th:if="${#lists.size(reviewAll) > 6}">
+			<div th:each="reviews, reviewsState : ${ reviewAll }" style="display: inline-block; margin: 10px 48px;">
+				<div th:if="${reviewsState.index} < 6" style="margin: 25px 0;">
+					<a th:href="@{ /review/detail?reviewId={reviewId} (reviewId = ${ reviews.reviewId }) }" th:onclick="updateWatchCount([[${reviews.reviewId}]])">
+					<div id="title" style="width: 350px; font-weight: bold; font-size: 21px; margin-bottom: 2px; margin-bottom: 8px;" th:text="${ reviews.title }"></div>
+					<div th:text="${ 'by ' + reviews.idName }" style="font-size: small; margin-bottom: 3px;"></div>
+					<div style="font-size: x-small; color:gray; float: right;">
+						<span th:text="${ #temporals.format(reviews.createdTime, 'yyyy/MM/dd') }"></span><i class="bi bi-alarm" style="margin-left: 3px;"></i>
+					</div>
+					<div th:if="${ reviews.imageId } == null">
+						<div style="width: 350px; height: 250px; margin: 10px 0; border: 1px solid black;"></div>	
+					</div>
+					<div th:unless="${ reviews.imageId } == null">
+						<img th:src="|/review/images/${reviews.imageId}|" style="width: 350px; height: 250px; margin: 10px 0; object-fit: cover;"/>
+					</div>
+					<div style="font-size: small; text-align: center;">
+						<span style="color:gray;">
+							<i class="bi bi-eye" style="margin-right: 3px;"></i>
+							<span th:text="${ reviews.watch }"></span>
+						</span>
+						<span style="margin: 0 21px; color:gray;">
+							<i class="bi bi-hearts" style="margin-right: 3px;"></i>
+							<span th:text="${ reviews.heart }"></span>
+						</span>
+						<span style="color:gray;">
+							<i class="bi bi-chat-text" style="margin-right: 3px;"></i>
+							<span th:text="${ reviews.replyCount }"></span>
+						</span>
+					</div>
+					</a>
+				</div>
+				<div id="displayNone" th:if="${reviewsState.index} >= 6" style="display: none; margin: 10px 48px;">
+					<a th:href="@{ /review/detail?reviewId={reviewId} (reviewId = ${ reviews.reviewId }) }" th:onclick="updateWatchCount([[${reviews.reviewId}]])">
+						<div id="title" style="width: 350px; font-weight: bold; font-size: 21px; margin-bottom: 2px; margin-bottom: 8px;" th:text="${ reviews.title }"></div>
+						<div th:text="${ 'by ' + reviews.idName }" style="font-size: small; margin-bottom: 3px;"></div>
+						<div style="font-size: x-small; color:gray; float: right;">
+							<span th:text="${ #temporals.format(reviews.createdTime, 'yyyy/MM/dd') }"></span><i class="bi bi-alarm" style="margin-left: 3px;"></i>
+						</div>
+						<div th:if="${ reviews.imageId } == null">
+							<div style="width: 350px; height: 250px; margin: 10px 0; border: 1px solid black;"></div>	
+						</div>
+						<div th:unless="${ reviews.imageId } == null">
+							<img th:src="|/review/images/${reviews.imageId}|" style="width: 350px; height: 250px; margin: 10px 0; object-fit: cover;"/>
+						</div>
+						<div style="font-size: small; text-align: center;">
+							<span style="color:gray;">
+								<i class="bi bi-eye" style="margin-right: 3px;"></i>
+								<span th:text="${ reviews.watch }"></span>
+							</span>
+							<span style="margin: 0 21px; color:gray;">
+								<i class="bi bi-hearts" style="margin-right: 3px;"></i>
+								<span th:text="${ reviews.heart }"></span>
+							</span>
+							<span style="color:gray;">
+								<i class="bi bi-chat-text" style="margin-right: 3px;"></i>
+								<span th:text="${ reviews.replyCount }"></span>
+							</span>
+						</div>
+					</a>
+				</div>
+			</div>
+			<div style="text-align: center;">
+				<button id="btnSeeAll" style="width: 10%; font-size: 21px; padding: 10px 0; border: none; background-color: black; color: white; border-radius: 10px; margin: 30px 0;">더 보 기</button>
+				<button id="btnSeeSix" style="display: none; width: 10%; font-size: 21px; padding: 10px 0; border: none; background-color: black; color: white; border-radius: 10px; margin: 30px 0;">접 기</button>		
+			</div>
+		</div>
+	</div>
+</div><!-- review part end -->
+
+</div><!-- FRAGMENT END -->
+
+<th:block layout:fragment="script">
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script th:src="@{ /js/main.js }"></script>
+<script>
+function updateWatchCount(reviewId) {
+	axios.get('/review/watchCount', { params: { reviewId : reviewId } })
+		.then(response => { console.log(response); })
+		.catch(err => { console.log(err) })
+}
+</script>
+</th:block>
+</html>

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{ layout/basic-layout }">
+<head>
+	<style>
+		textarea:focus {
+			outline: none;
+		}
+		
+		button {
+			width: 100px;
+			height: 35px;
+		}
+		
+		.star {
+			position: relative;
+			font-size: 32px;
+			color: #ddd;
+		}
+		
+		.star input {
+			width: 100%;
+			height: 100%;
+			position: absolute;
+			left: 0;
+			opacity: 0;
+			display: inline-block;
+		}
+		
+		.star span {
+			width: 0;
+			position: absolute;
+			left: 0;
+			color: yellow;
+			overflow: hidden;
+			pointer-events: none;
+		}
+		
+		.imagesList li {
+			list-style: none;
+			display: inline-block;
+			margin-right: 10px;
+		}
+		
+		.btnDelete {
+			background-color: white;
+			border: none;
+			width: 18px;
+		}
+		
+		#btnImage {
+			border: none;
+			font-size: 36px;
+		}
+	</style>
+</head>
+
+<div layout:fragment="content">
+
+	<div style="width:100%; margin: auto;"><!-- main content -->
+		<div>
+			<form id="formCreate" enctype="multipart/form-data">
+				<input id="author" name="author" type="hidden" th:value="${ #authentication.principal.idName }" />
+				<div style="width:70%; border-bottom: thin solid silver; margin: auto;">
+					<textarea id="title" name="title" style="width: 100%; border: none; font-size: 30px; height: 30px; resize: none;" placeholder="제목을 입력하세요"></textarea>
+				</div>
+				<div style="width:70%; margin: auto;">
+					<textarea id="content" name="content" style="width: 100%; padding-bottom:50px; font-size: 15px; border: none; resize: none; margin-top: 15px; line-height: 1.5em;" placeholder="내용을 입력하세요!"></textarea>
+					<div id="images" style="width:70%; text-align: left; margin: auto;"></div>
+					<ul class="imagesList" style="padding-left: 0;">
+					</ul>
+				</div>
+				<div style="width:70%; text-align: left; margin: auto; padding: 15px 0;">
+				<label id="btnImage" for="image"><i class="bi bi-folder-plus"></i></label>
+				<input id="image" type="file" multiple="multiple" onchange="setThumbnail(this)" name="files" style="display: none;"/>
+				</div>
+				<div style="width:70%; text-align: left; margin: auto;">
+					<span class="star">
+						★★★★★
+						<span>★★★★★</span>
+						<input id="score" name="score" type="range" oninput="drawStar(this)" value="1" step="1" min="0" max="5"/>
+					</span>
+				</div>
+				<input id="storage" name="storage" type="hidden" value="1"/>
+			</form>
+			<div style="width:70%; margin: auto; text-align: right;">
+				<button id="btnSave" type="button" style="background-color: silver; border: none; color: black; border-radius: 12px;">저장</button>
+				<button id="btnRelease" type="button" style="background-color: black; border: none; color: white; border-radius: 12px;">발행</button>
+			</div>
+		</div>
+		
+	</div><!-- main content end -->
+</div><!-- fragment end -->
+
+<th:block layout:fragment="script">
+	<script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>	
+	<script th:src="@{ /js/create.js }"></script>
+	<script>
+		const drawStar = (target) => {
+			document.querySelector(`.star span`).style.width = `${target.value * 20}%`;
+		}
+	</script>
+	<script> // image 레이아웃 수정 필요       
+	function setThumbnail(event) {
+		for (let i = 0; i < event.files.length; i++) {
+			if (event.files && event.files[i]) {
+				let reader = new FileReader();
+				let fullname = document.getElementById("image").files[i].name;
+				
+				let node = document.createElement('li');
+				let tmp = `
+				<li>
+					<div style="width:250px; text-align: right; font-size: small;">
+						${fullname}
+						<button class="btnDelete"><i class="bi bi-x-circle"></i></button>
+					</div>
+					<img src="" style="width: 250px; height: 150px; object-fit: cover;">
+				</li>
+				`
+				
+				node.innerHTML = tmp;
+				
+				node.querySelector('.btnDelete').onclick = function () {
+					node.remove();
+					const dataTransfer = new DataTransfer();
+					let trans = $('#image')[0].files;
+					let filearray = Array.from(trans);
+					filearray.splice(i, 1);
+					filearray.forEach(file => {
+						dataTransfer.items.add(file);
+					});
+					$('#image')[0].files = dataTransfer.files
+				}
+				
+				reader.onload = function (e) {
+					document.querySelector('.imagesList').appendChild(node);
+					node.querySelector("img").setAttribute('src', e.target.result);
+				}
+				
+				reader.readAsDataURL(event.files[i]);
+			}
+		}
+	}
+	</script>
+</th:block>
+
+</html>

@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+	<head>
+		<meta charset="UTF-8">
+		<title>Film Project</title>
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css"><!-- ICON -->
+		<link rel="stylesheet" href="/css/header.css"/><!-- header css -->
+	</head>
+	<body>
+		<div th:replace="~{fragments/header :: header}"></div>
+		
+		<div layout:fragment="content" style="padding-top: 85px;"></div>
+		
+		<th:block layout:fragment="script"></th:block>
+	</body>
+</html>

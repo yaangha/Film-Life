@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{ layout/basic-layout }">
+	
+<div layout:fragment="content">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+
+<style>
+	h3 {
+		margin-bottom: 5px;
+		text-align: left;
+	}
+	
+	.info {
+		width: 460px;
+		margin: auto;
+	}
+	
+	.input-div {
+		border: thin solid silver;
+		padding: 10px 14px;
+	}
+	
+	input {
+		border: none;
+		font-size: 15px;
+		width: 390px;
+		height: 30px;
+		padding: 0 36px 0 0;
+	}
+	
+	input:focus {
+		outline: none;
+	}
+</style>
+
+<div style="width: 100%; text-align: center;">
+	<h2>JOIN</h2><!-- (TODO)클릭시 메인으로 이동 -->
+	<form id="formJoin">
+	<div class="info">
+		<h3>
+			<label for="idName">아이디</label>
+		</h3>
+		<div class="input-div">
+			<input id="idName" name="idName" type="text" autofocus/>
+		</div>
+		<div id="checkIdName"></div>
+	</div>
+	
+	<div class="info">
+		<h3>
+			<label for="password">비밀번호</label>
+		</h3>
+		<div class="input-div">
+			<input id="password" name="password" type="password" style="padding: 0 15px 0 0;"/>
+			<i class="bi bi-shield-lock" style="font-size: 21px; color: silver; vertical-align: middle;"></i>
+		</div>
+	</div>
+	
+	<div class="info">
+		<h3>
+			<label for="pwChk">비밀번호 재확인</label>
+		</h3>
+		<div class="input-div">
+			<input id="pwChk" type="password" style="padding: 0 15px 0 0;"/>
+			<i class="bi bi-shield-lock" style="font-size: 21px; color: silver; vertical-align: middle;"></i>
+		</div>
+		<div id="checkPw"></div>
+	</div>
+	
+	<div class="info">
+		<h3>
+			<label for="username">이름</label>
+		</h3>
+		<div class="input-div">
+			<input id="username" name="username" type="text" />
+		</div>
+	</div>
+	
+	<div class="info">
+		<h3>
+			<label for="email">본인 확인 이메일</label>
+		</h3>
+		<div class="input-div">
+			<input id="email" name="email" type="text" />
+		</div>
+	</div>
+	
+	<div class="info">
+		<h3>
+			<label for="phone">휴대전화</label>
+		</h3>
+		<div class="input-div">
+			<input id="phone" name="phone" type="text" />
+		</div>
+	</div>
+	</form>
+	<button id="btnJoin" style="width:460px; height: 52px; background-color: black; color: white; border:none; border-radius: 5px; margin: 10px 0;">가입하기</button>
+</div><!-- w-100 end -->
+</div><!-- fragment end -->
+
+<th:block layout:fragment="script">
+	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+	<script th:src="@{ /js/join.js }"></script>
+	
+	<script>
+	const formJoin = document.querySelector('#formJoin');
+	const btnJoin = document.querySelector('#btnJoin');
+	btnJoin.addEventListener('click', function () {
+		formJoin.action = '/join';
+		formJoin.method = 'post';
+		formJoin.submit();
+	});
+	</script>
+</th:block>
+</html>

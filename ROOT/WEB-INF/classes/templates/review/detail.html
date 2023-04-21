@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{ layout/basic-layout }">
+	
+<head>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+	<style>
+		#writer {
+			border: none;
+			outline: none;
+		}
+		
+		#heart {
+			font-size: 42px;
+			color: silver;
+		}
+		
+		#heart:hover {
+			color: red;
+		}
+		
+		#heart-full {
+			font-size: 42px;
+			color: red;
+		}
+		
+		.btnHeart {
+			border: none;
+			background-color: white;
+		}
+		
+		#title {
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+		
+		.star {
+			position: relative;
+			font-size: 32px;
+			color: #ddd;
+		}
+		
+		.star input {
+			width: 100%;
+			height: 100%;
+			position: absolute;
+			left: 0;
+			opacity: 0;
+			display: inline-block;
+		}
+		
+		.star span {
+			width: 0;
+			position: absolute;
+			left: 0;
+			color: yellow;
+			overflow: hidden;
+			pointer-events: none;
+		}
+		
+		a {
+			color: black;
+			text-decoration: none;
+		}
+		
+		#btnModify, #btnDelete {
+			border: none;
+			background-color: white;
+			font-size: 25px;
+		}
+		
+		.btnDeletes, .btnModifies {
+			background-color: white;
+			border: thin solid silver;
+			padding: 5px;
+			margin: 3px;
+			color: gray;
+			border-radius: 3px;			
+		}
+		
+		.images {
+			box-shadow: 5px 5px 10px lightgray;
+			border-radius: 5px;
+			width: 350px; 
+			height: 250px; 
+			margin: 10px 0;
+		}
+		
+		.hearts {
+			margin-right: 3px; 
+			color:gray;
+		}
+	</style>
+</head>	
+
+<div layout:fragment="content">
+	
+	<div style="margin: auto; width: 80%;">
+		<form id="formDelete">
+			<input type="hidden" id="reviewId" name="reviewId" th:value="${ review.id }"/>
+		</form>
+		<div style="border-bottom: thin solid silver; padding-bottom: 10px; margin-bottom: 5px;">
+			<div>
+				<div th:text="${ review.title }" style="width: 93%; font-size: 30px; font-weight:bolder; margin: 8px 0; display: inline-block;"></div>
+				<div style="display: inline-block; vertical-align: top;">
+				<th:block sec:authorize="isAuthenticated()">
+					<span id="loginUser" sec:authentication="principal.idName" style="display: none;"></span>
+					<div th:unless="${ #authentication.principal.idName } == ${ review.author }">
+						<div th:if="${ heart } == 0">
+							<button class="btnHeart" id="heart"><i class="bi bi-hearts"></i></button>
+							<button class="btnHeart" id="heart-full" style="display: none;"><i class="bi bi-hearts"></i></button>
+						</div>
+						<div th:unless="${ heart } == 0">
+							<button class="btnHeart" id="heart" style="display: none;"><i class="bi bi-hearts"></i></button>
+							<button class="btnHeart" id="heart-full"><i class="bi bi-hearts"></i></button>
+						</div>
+					</div>
+				</th:block>
+				<th:block sec:authorize="isAnonymous()">
+					<button class="btnHeart" id="heart" onclick="loginAlert()"><i class="bi bi-hearts"></i></button>
+				</th:block>
+				</div>
+			</div>
+			<div style="color: gray; font-size: small;">
+				<div th:text="${ 'by ' + review.author }" style="display: inline-block;"></div>
+				<div style="display: inline-block;"><i class="bi bi-alarm" style="margin: 0 3px;"></i><span th:text="${ #temporals.format(review.createdTime, 'yyyy/MM/dd hh:mm') }"></span></div>
+			</div>
+		</div>
+		<div style="color: gray; font-size: small; text-align: right;">
+			<span class="hearts"><i class="bi bi-eye" style="padding-right: 3px;"></i><span th:text="${ reviewDto.watch }"></span></span>
+			<span class="hearts"><i class="bi bi-hearts" style="padding-right: 3px;"></i><span id="countHeart" th:text="${ reviewDto.heart }"></span></span>
+		</div>
+		<div style="margin-bottom: 10px;">
+			<span class="star">
+				★★★★★
+				<span id="colorStar">★★★★★</span>
+				<input id="score" name="score" type="range" th:value="${ review.score }" step="1" min="0" max="5"/>
+			</span>
+		</div>
+		
+		<div th:text="${ review.content }" style="padding-bottom: 50px; font-size: 15px; white-space: pre-wrap; line-height: 1.5em;"></div>
+		
+		<div th:unless="${ reviewDto.imageId } == null">
+			<div th:each="image : ${ images }" style="margin: 10px 0; display: inline-block;">
+				<img class="images" th:src="|/review/images/${image.id}|" style="object-fit: cover;"/>
+			</div>
+		</div>
+		
+		<th:block sec:authorize="isAuthenticated()">
+		<div style="text-align: right;">
+			<div th:if="${ #authentication.principal.idName } == ${ review.author }">
+				<button id="btnModify" onclick="moveModify()"><i class="bi bi-pencil-square"></i></button>
+				<button id="btnDelete"><i class="bi bi-trash3"></i></button>
+			</div>
+		</div>
+		</th:block>
+		
+		<div style="margin: 70px 0;">
+			<div style="font-size: 18px; font-weight: bold; margin: 20px 0;">댓글 <span id="countReply" style="color: green;" th:text="${ reviewDto.replyCount }"></span></div>
+			<div id="replies"></div>
+			<th:block sec:authorize="isAuthenticated()">
+			<div>
+				<input type="hidden" id="writer" th:value="${ #authentication.principal.idName }"/>
+				<div style="border: 1px solid silver; border-radius: 10px;">
+					<input id="replyText" type="text" style="width: 93%; height: 25px; font-size: 15px; border: none; padding: 10px; outline: none;" placeholder="댓글을 입력해주세요 :)"/>
+					<button id="btnReply" style="border: thin solid silver; background-color: white; padding: 8px; border: none; color:gray;">Click</button>
+				</div>
+			</div>
+			</th:block>
+			<th:block sec:authorize="isAnonymous()">
+				<div style="border: thin solid silver;">
+					<input type="text" style="width: 93%; height: 25px; font-size: 15px; border: none; padding: 10px; outline: none;" placeholder="로그인 후 사용가능합니다 :)" readonly/>
+					<button style="border: thin solid silver; background-color: white; padding: 8px; border-radius: 15px; color:gray;">Click</button>
+				</div>
+			</th:block>
+		</div>
+		<div style="margin: 50px 0;">
+			<div th:each="reviews : ${ otherReviews }" style="display: inline-block; margin: 30px 12px;">
+				<a th:href="@{ /review/detail?reviewId={reviewId} (reviewId = ${ reviews.reviewId }) }"  th:onclick="updateWatchCount([[${reviews.reviewId}]])">
+				<div id="title" style="width: 350px; font-weight: bold; font-size: 21px; margin-bottom: 2px; margin-bottom: 8px;" th:text="${ reviews.title }"></div>
+				<div th:text="${ 'by ' + reviews.idName }" style="font-size: small; margin-bottom: 3px;"></div>
+				<div style="font-size: x-small; color:gray; float: right;">
+						<i class="bi bi-alarm" style="margin-right: 3px;"></i><span th:text="${ #temporals.format(reviews.createdTime, 'yyyy/MM/dd') }"></span>
+					</div>
+					<div th:if="${ reviews.imageId } == null">
+						<div class="images" style="border: 1px solid black;"></div>	
+					</div>
+					<div th:unless="${ reviews.imageId } == null">
+						<img class="images" th:src="|/review/images/${reviews.imageId}|" style="object-fit: cover;"/>
+					</div>
+					<div style="font-size: small; text-align: center;">
+						<span style="color:gray;">
+							<i class="bi bi-eye" style="margin-right: 3px;"></i>
+							<span th:text="${ reviews.watch }"></span>
+						</span>
+						<span style="margin: 0 21px; color:gray;">
+							<i class="bi bi-hearts" style="margin-right: 3px;"></i>
+							<span th:text="${ reviews.heart }"></span>
+						</span>
+						<span style="color:gray;">
+							<i class="bi bi-chat-text" style="margin-right: 3px;"></i>
+							<span th:text="${ reviews.replyCount }"></span>
+						</span>
+					</div>
+				</a>
+			</div>
+		</div>
+	</div>
+</div><!-- fragment end -->
+
+<th:block layout:fragment="script">
+	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+	<script th:src="@{ /js/reply.js }"></script>
+	<script>
+		const reviewIdInput = document.querySelector('#reviewId').value;
+		const reviewId = Number(reviewIdInput);
+		
+		const btnHeartAdd = document.querySelector('#heart');
+		const btnHeartDelete = document.querySelector('#heart-full');
+		
+		let countHeart = document.querySelector('#countHeart').value;
+		
+		if (btnHeartAdd && btnHeartDelete) {
+			btnHeartAdd.addEventListener('click', () => {
+				const reviewId = Number(reviewIdInput);
+				
+				axios.post('/api/review/heart', null, { params: {reviewId} })
+					.then(response => { 
+						console.log(response.data); 
+						changeFull(response.data);
+					})
+					.catch(error => { console.log(error); })
+			})
+			
+			function changeFull(data) {
+				btnHeartDelete.style.display = '';
+				btnHeartAdd.style.display = 'none';
+				document.querySelector('#countHeart').innerText = data;
+			}
+			
+			btnHeartDelete.addEventListener('click', () => {
+				
+				axios.post('/api/review/heartDelete', null, { params: {reviewId} })
+					.then(response => {
+						console.log(response.data);
+						changeHeart(response.data);
+					})
+					.catch(error => { console.log(error); })
+			})
+			
+			function changeHeart(data) {
+				btnHeartDelete.style.display = 'none';
+				btnHeartAdd.style.display = '';
+				document.querySelector('#countHeart').innerText = data;
+			}
+		}
+	</script>
+	<script>
+		function loginAlert() {
+			const result = confirm('로그인 후 사용가능합니다. 로그인하시겠습니까?');
+			if (result) { window.location.href = '/login'; }
+		}
+	</script>
+	<script>
+		const btnDelete = document.querySelector('#btnDelete');
+		const btnModify = document.querySelector('#btnModify');
+		
+		if (btnDelete || btnModify) {
+			btnDelete.addEventListener('click', () => {
+				const result = confirm('정말 삭제하시겠습니까?');
+				const formDelete = document.querySelector('#formDelete');
+				if (result) {
+					formDelete.action = '/review/delete';
+					formDelete.method = 'post';
+					formDelete.submit();
+				}
+			})
+			
+			btnModify.addEventListener('click', () => {
+				window.location.href = '/review/modify?reviewId=' + reviewId;
+			})
+		}
+	</script>
+	<script>
+		const score = document.querySelector('#score').value;
+		document.querySelector('#colorStar').style.width = `${score * 20}%`;
+	</script>
+	<script>
+	function updateWatchCount(reviewId) {
+		axios.get('/review/watchCount', { params: { reviewId : reviewId } })
+			.then(response => { console.log(response); })
+			.catch(err => { console.log(err) })
+	}
+	</script>
+</th:block>
+
+</html>

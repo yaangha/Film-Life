@@ -273,27 +273,26 @@ public class ReviewService {
 	 * @return 보여줄 리뷰들 리스트 
 	 */
 	public List<ReviewReadDto> readOtherReviews(Integer reviewId) {
-		log.info("ReviewService otherReviews reviewId = {}", reviewId);
 		List<Review> otherReviews = reviewRepository.findOtherReviews(reviewId);
-		log.info("ReviewService otherReviews size={}", otherReviews.size());
-		
 		List<ReviewReadDto> list = new ArrayList<>();
 		if (otherReviews.size() > 6) {
 			for (int i = 0; i < 6; i++) {
-				if (otherReviews.get(i).getStorage() == 1) {
-					ReviewReadDto dto = addData(otherReviews.get(i));
-					list.add(dto);
-				}
+				saveOtherReviews(list, otherReviews.get(i));
 			}
 		} else {
 			for (Review r : otherReviews) {
-				if (r.getStorage() == 1) {
-					ReviewReadDto dto = addData(r);
-					list.add(dto);				
-				}
+				saveOtherReviews(list, r);
 			}
 		}
+		
 		return list;
+	}
+	
+	private void saveOtherReviews(List<ReviewReadDto> list, Review review) {
+		if (review.getStorage() == 1) {
+			ReviewReadDto dto = addData(review);
+			list.add(dto);
+		}
 	}
 
 	// 중복되는 코드는 메서드 만들어서 사용
