@@ -63,14 +63,25 @@ public class ReviewService {
 	// 발행된 리뷰들만 List에 저장하는 메서드 
 	public List<ReviewReadDto> readReleaseAll() {
 		List<Review> listAll = readAll();
-		List<ReviewReadDto> list = new ArrayList<>();
-		for (Review r : listAll) {
-			if (r.getStorage() == 1) {
-				ReviewReadDto dto = addData(r);
-				list.add(dto);
+		
+		return saveList(listAll, 1);
+	}
+	
+	/**
+	 * 저장여부에 따라 리스트 저장  
+	 * @param list
+	 * @param storage
+	 * @return
+	 */
+	private List<ReviewReadDto> saveList(List<Review> list, Integer storage) {
+		List<ReviewReadDto> result = new ArrayList<>();
+		for (Review review : list) {
+			if (review.getStorage() == storage) {
+				ReviewReadDto dto = addData(review);
+				result.add(dto);
 			}
 		}
-		return list;
+		return result;
 	}
 	
 	/**
