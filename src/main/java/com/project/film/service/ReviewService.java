@@ -63,23 +63,25 @@ public class ReviewService {
 	// 발행된 리뷰들만 List에 저장하는 메서드 
 	public List<ReviewReadDto> readReleaseAll() {
 		List<Review> listAll = readAll();
-		List<ReviewReadDto> list = new ArrayList<>();
-		for (Review r : listAll) {
-			if (r.getStorage() == 1) {
-				Integer[] score = countScore(r.getId());
-				
-				List<Reply> reply = replyRepository.findByReviewIdOrderByIdDesc(r.getId());
-				Integer countReply = reply.size();
-				
-				List<Image> image = imageRepository.findByReviewId(r.getId());
-				log.info("review controller image list = {}", image);
-				Long imageId = (image.size() == 0)? null : image.get(0).getId();
-				
-				log.info("review controller image path?? = {}", imageId);
-				list.add(ReviewReadDto.fromEntity(r, score[0], score[1], countReply, imageId));
+		
+		return saveList(listAll, 1);
+	}
+	
+	/**
+	 * 저장여부에 따라 리스트 저장  
+	 * @param list
+	 * @param storage
+	 * @return
+	 */
+	private List<ReviewReadDto> saveList(List<Review> list, Integer storage) {
+		List<ReviewReadDto> result = new ArrayList<>();
+		for (Review review : list) {
+			if (review.getStorage() == storage) {
+				ReviewReadDto dto = addData(review);
+				result.add(dto);
 			}
 		}
-		return list;
+		return result;
 	}
 	
 	/**
@@ -119,12 +121,7 @@ public class ReviewService {
 			List<Review> reviews = reviewRepository.findByAuthorIgnoreCaseContainingOrTitleIgnoreCaseContainingOrContentIgnoreCaseContainingOrderByIdDesc(keyword, keyword, keyword);
 			for (Review r : reviews) {
 				if (r.getStorage() == 1) {
-					Integer[] score = countScore(r.getId());
-					
-					List<Reply> reply = replyRepository.findByReviewIdOrderByIdDesc(r.getId());
-					List<Image> image = imageRepository.findByReviewId(r.getId());
-
-					ReviewReadDto dto = ReviewReadDto.fromEntity(r, score[0], score[1], reply.size(), image.get(0).getId());
+					ReviewReadDto dto = addData(r);
 					list.add(dto);
 				}
 			}
@@ -264,17 +261,6 @@ public class ReviewService {
 		return result;
 	}
 	
-	// 중복되는 코드는 메서드 만들어서 사용
-	public Integer totalHeart(Integer reviewId) {
-		Integer result = 0;
-		List<ReviewScore> list = reviewScoreRepository.findByReviewId(reviewId);
-		for (ReviewScore rs : list) {
-			result += rs.getHeart();
-		}
-		
-		return result;
-	}
-	
 	public Integer[] countScore(Integer reviewId) {
 		Integer[] score = new Integer[2];
 		
@@ -290,6 +276,59 @@ public class ReviewService {
 		score[1] = watch;
 		
 		return score;
+	}
+	
+	/**
+	 * 디테일 페이지에서 다른 리뷰들 보여줄 때 사용  
+	 * @param reviewId 제외할 리뷰 아이디  
+	 * @return 보여줄 리뷰들 리스트 
+	 */
+	public List<ReviewReadDto> readOtherReviews(Integer reviewId) {
+		List<Review> otherReviews = reviewRepository.findOtherReviews(reviewId);
+		List<ReviewReadDto> list = new ArrayList<>();
+		if (otherReviews.size() > 6) {
+			for (int i = 0; i < 6; i++) {
+				saveOtherReviews(list, otherReviews.get(i));
+			}
+		} else {
+			for (Review r : otherReviews) {
+				saveOtherReviews(list, r);
+			}
+		}
+		
+		return list;
+	}
+	
+	private void saveOtherReviews(List<ReviewReadDto> list, Review review) {
+		if (review.getStorage() == 1) {
+			ReviewReadDto dto = addData(review);
+			list.add(dto);
+		}
+	}
+
+	// 중복되는 코드는 메서드 만들어서 사용
+	public Integer totalHeart(Integer reviewId) {
+		Integer result = 0;
+		List<ReviewScore> list = reviewScoreRepository.findByReviewId(reviewId);
+		for (ReviewScore rs : list) {
+			result += rs.getHeart();
+		}
+		
+		return result;
+	}
+	
+	private ReviewReadDto addData(Review review) {
+		Integer[] score = countScore(review.getId());
+		
+		List<Reply> reply = replyRepository.findByReviewIdOrderByIdDesc(review.getId());
+		Integer countReply = reply.size();
+		
+		List<Image> image = imageRepository.findByReviewId(review.getId());
+		Long imageId = (image.size() == 0)? null : image.get(0).getId();
+		
+		ReviewReadDto dto = ReviewReadDto.fromEntity(review, score[0], score[1], countReply, imageId);
+		
+		return dto;
 	}
 
 }

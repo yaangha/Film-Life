@@ -1,0 +1,51 @@
+@charset "UTF-8";
+
+textarea:focus {
+	outline: none;
+}
+
+button {
+	width: 100px;
+	height: 35px;
+}
+
+.star {
+	position: relative;
+	font-size: 32px;
+	color: #ddd;
+}
+
+.star input {
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	left: 0;
+	opacity: 0;
+	display: inline-block;
+}
+
+.star span {
+	width: 0;
+	position: absolute;
+	left: 0;
+	color: yellow;
+	overflow: hidden;
+	pointer-events: none;
+}
+
+.imagesList li {
+	list-style: none;
+	display: inline-block;
+	margin-right: 10px;
+}
+
+.btnDelete {
+	background-color: white;
+	border: none;
+	width: 18px;
+}
+
+#btnImage {
+	border: none;
+	font-size: 36px;
+}

@@ -48,7 +48,7 @@ public class ReviewController {
 	@ResponseBody
 	@GetMapping("/images/{imageId}")
 	public Resource showImage(@PathVariable("imageId") Long imageId, Model model) throws IOException {
-		 Image image = imageRepository.findById(imageId).get();
+		Image image = imageRepository.findById(imageId).get();
 	    return new UrlResource("file:" + image.getFilePath());
 	}
 	
@@ -92,14 +92,8 @@ public class ReviewController {
 		List<Image> images = imageService.readByReviewId(reviewId);
 		model.addAttribute("images", images);
 		
-		List<ReviewReadDto> reviewAll = reviewService.readReleaseAll();
-		List<ReviewReadDto> otherReview = new ArrayList<>();
-		
-		for (ReviewReadDto dto : reviewAll) {
-			if (dto.getReviewId() != reviewId) { otherReview.add(dto); }
-		}
-		
-		model.addAttribute("otherReview", otherReview);
+		List<ReviewReadDto> otherReviews = reviewService.readOtherReviews(reviewId);
+		model.addAttribute("otherReviews", otherReviews);
 	}
 	
 	@GetMapping("/modify")

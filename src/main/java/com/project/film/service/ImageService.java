@@ -78,6 +78,7 @@ public class ImageService {
 		List<Review> reviewList = reviewRepository.findByAuthorOrderByIdDesc(idName);
 		List<Image> imageList = new ArrayList<>();
 		
+		// Storage가 1인 경우만 저장  
 		if (reviewList != null) {
 			for (Review r : reviewList) {
 				if (r.getStorage() == 1) {
@@ -85,7 +86,7 @@ public class ImageService {
 					if (image.size() != 0) {
 						imageList.add(image.get(0));
 					} else {
-						imageList = null;
+						imageList.add(null);
 					}
 				}
 			}			
